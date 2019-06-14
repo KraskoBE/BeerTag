@@ -5,6 +5,7 @@ import java.util.List;
 
 public class User {
 
+    private int id;
     private String email;
     private String password;
 
@@ -15,7 +16,8 @@ public class User {
 
     public User(){}
 
-    public User(String email, String password, String name, int age){
+    public User(int id, String email, String password, String name, int age){
+        this.id = id;
         this.email = email;
         this.password = password;
 
@@ -25,6 +27,13 @@ public class User {
         drankList = new ArrayList<>();
     }
 
+
+    public int getId(){
+        return id;
+    }
+    public void setId(int id){
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;
