@@ -9,6 +9,8 @@ public interface BeerService {
 
     Beer get(int id);
 
+    Beer update(int id, Beer newBeer);
+
     void remove(int id);
 
     List<Beer> getAll();

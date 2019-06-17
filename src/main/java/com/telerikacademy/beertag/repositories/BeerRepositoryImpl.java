@@ -3,13 +3,12 @@ package com.telerikacademy.beertag.repositories;
 import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-public class BeerRepositoryImpl implements BeerRepository {
+@org.springframework.stereotype.Repository
+public class BeerRepositoryImpl implements Repository<Beer> {
 
     private List<Beer> beers;
 
@@ -46,6 +45,18 @@ public class BeerRepositoryImpl implements BeerRepository {
                 .filter(x -> x.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format("Beer with id: %d not found.", id)));
+    }
+
+    @Override
+    public Beer update(Beer oldBeer, Beer newBeer) {
+        oldBeer.setName(newBeer.getName());
+        oldBeer.setBrewery(newBeer.getBrewery());
+        oldBeer.setOriginCountry(newBeer.getOriginCountry());
+        oldBeer.setABV(newBeer.getABV());
+        oldBeer.setDescription(newBeer.getDescription());
+        oldBeer.setType(newBeer.getType());
+        oldBeer.setStyle(newBeer.getStyle());
+        return oldBeer;
     }
 
     @Override

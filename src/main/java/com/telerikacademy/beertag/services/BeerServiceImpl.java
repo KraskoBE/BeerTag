@@ -1,7 +1,7 @@
 package com.telerikacademy.beertag.services;
 
 import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.repositories.BeerRepository;
+import com.telerikacademy.beertag.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 @Service
 public class BeerServiceImpl implements BeerService {
 
-    private BeerRepository beerRepository;
+    private Repository beerRepository;
 
     @Autowired
-    public BeerServiceImpl(BeerRepository beerRepository) {
+    public BeerServiceImpl(Repository beerRepository) {
         this.beerRepository = beerRepository;
     }
 
@@ -33,6 +33,12 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public Beer get(int id) {
         return this.beerRepository.get(id);
+    }
+
+    @Override
+    public Beer update(int id, Beer newBeer) {
+        Beer oldBeer = get(id);
+        return this.beerRepository.update(oldBeer, newBeer);
     }
 
     @Override

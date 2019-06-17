@@ -39,14 +39,21 @@ public class BeerController {
         }
     }
 
+    @PutMapping("/{id}")
+    public Beer update(@PathVariable int id, @RequestBody Beer beer) {
+        try {
+            return beerService.update(id, beer);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
-    public void remove(@PathVariable int id)
-    {
+    public void remove(@PathVariable int id) {
         try {
             beerService.remove(id);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
 }
