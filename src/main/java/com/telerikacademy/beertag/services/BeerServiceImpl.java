@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("BeerService")
 public class BeerServiceImpl implements BeerService {
 
-    private Repository beerRepository;
+    private Repository<Beer> beerRepository;
 
     @Autowired
-    public BeerServiceImpl(Repository beerRepository) {
+    public BeerServiceImpl(Repository<Beer> beerRepository) {
         this.beerRepository = beerRepository;
     }
 

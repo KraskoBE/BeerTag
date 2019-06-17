@@ -7,7 +7,7 @@ import com.telerikacademy.beertag.models.constants.BeerType;
 import java.util.ArrayList;
 import java.util.List;
 
-@org.springframework.stereotype.Repository
+@org.springframework.stereotype.Repository("BeerRepository")
 public class BeerRepositoryImpl implements Repository<Beer> {
 
     private List<Beer> beers;
