@@ -1,7 +1,7 @@
 package com.telerikacademy.beertag.controllers;
 
 import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.services.BeerService;
+import com.telerikacademy.beertag.services.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/api/beers")
 public class BeerController {
 
-    private BeerService beerService;
+    private Service<Beer> beerService;
 
     @Autowired
-    public BeerController(BeerService beerService) {
+    public BeerController(Service<Beer> beerService) {
         this.beerService = beerService;
     }
 

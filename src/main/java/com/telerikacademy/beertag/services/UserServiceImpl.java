@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Service
-public class UserServiceImpl implements UserService {
+@Service("UserService")
+public class UserServiceImpl implements com.telerikacademy.beertag.services.Service<User> {
     private Repository<User> userRepository;
 
     @Autowired
@@ -24,12 +24,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(int id) {
+    public User get(int id) {
         return userRepository.get(id);
     }
 
     @Override
-    public User create(User user) {
+    public User add(User user) {
         checkDuplicateId(user);
 
         checkDuplicateEmail(user);
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(int id) {
+    public void remove(int id) {
         userRepository.remove(userRepository.get(id));
     }
 

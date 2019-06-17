@@ -3,13 +3,12 @@ package com.telerikacademy.beertag.services;
 import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service("BeerService")
-public class BeerServiceImpl implements BeerService {
+@org.springframework.stereotype.Service("BeerService")
+public class BeerServiceImpl implements Service<Beer> {
 
     private Repository<Beer> beerRepository;
 

@@ -14,9 +14,10 @@ public class User {
     private List<Beer> wishList;
     private List<Beer> drankList;
 
-    public User(){}
+    public User() {
+    }
 
-    public User(int id, String email, String password, String name, int age){
+    public User(int id, String email, String password, String name, int age) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -28,16 +29,18 @@ public class User {
     }
 
 
-    public int getId(){
+    public int getId() {
         return id;
     }
-    public void setId(int id){
+
+    public void setId(int id) {
         this.id = id;
     }
 
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -45,6 +48,7 @@ public class User {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -52,6 +56,7 @@ public class User {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -59,6 +64,7 @@ public class User {
     public int getAge() {
         return age;
     }
+
     public void setAge(int age) {
         this.age = age;
     }

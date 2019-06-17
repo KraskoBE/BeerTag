@@ -5,7 +5,7 @@ import com.telerikacademy.beertag.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-@org.springframework.stereotype.Repository
+@org.springframework.stereotype.Repository("UserRepository")
 public class UserRepositoryImpl implements Repository<User> {
     private List<User> users;
 
