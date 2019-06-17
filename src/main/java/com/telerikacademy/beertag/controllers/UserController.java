@@ -12,11 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserConroller {
+public class UserController {
     private UserService service;
 
     @Autowired
-    public UserConroller(UserService service){
+    public UserController(UserService service){
         this.service = service;
     }
 
@@ -62,9 +62,9 @@ public class UserConroller {
     }
 
     @DeleteMapping("/{id}")
-    public User delete(@PathVariable int id) {
+    public void delete(@PathVariable int id) {
         try {
-           return  service.delete(id);
+           service.delete(id);
         } catch (RuntimeException ex) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
