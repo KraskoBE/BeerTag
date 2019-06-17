@@ -3,15 +3,36 @@ package com.telerikacademy.beertag.models;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
 
-public class Beer {
+import javax.persistence.*;
 
+
+@Entity
+@Table(name = "beers")
+public class Beer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "BeerId")
     private int id;
+
+    @Column(name = "Name")
     private String name;
+
+    @Column(name = "brewery")
     private String brewery;
+
+    @Column(name = "originCountry")
     private String originCountry;
+
+    @Column(name = "ABV")
     private double ABV;
+
+    @Column(name = "Description")
     private String description;
+
+    @Column(name = "Type")
     private BeerType type;
+
+    @Column(name = "Style")
     private BeerStyle style;
     //private Image picture;
 
@@ -19,7 +40,7 @@ public class Beer {
     public Beer() {
     }
 
-    public Beer(int id, String name, String brewery, String originCountry, double ABV, String description, BeerType type, BeerStyle style) {
+    /*public Beer(int id, String name, String brewery, String originCountry, double ABV, String description, BeerType type, BeerStyle style) {
         this.id = id;
         this.name = name;
         this.brewery = brewery;
@@ -28,7 +49,7 @@ public class Beer {
         this.description = description;
         this.type = type;
         this.style = style;
-    }
+    }*/
 
     public int getId() {
         return id;

@@ -1,17 +1,47 @@
 package com.telerikacademy.beertag.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "users")
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserId")
     private int id;
+
+    @Column(name = "Email")
     private String email;
+
+    @Column(name = "Password")
     private String password;
 
+    @Column(name = "Name")
     private String name;
+
+    @Column(name = "Age")
     private int age;
+
+    @ManyToMany
+    @JoinTable(
+            name = "WishList",
+            joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "BeerId")
+    )
+    @JsonIgnore
     private List<Beer> wishList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "DrankList",
+            joinColumns = @JoinColumn(name = "UserId"),
+            inverseJoinColumns = @JoinColumn(name = "BeerId")
+    )
+    @JsonIgnore
     private List<Beer> drankList;
 
     public User() {

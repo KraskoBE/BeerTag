@@ -3,16 +3,25 @@ package com.telerikacademy.beertag.repositories;
 import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.stereotype.Repository("BeerRepository")
 public class BeerRepositoryImpl implements Repository<Beer> {
-
+    private SessionFactory sessionFactory;
     private List<Beer> beers;
 
-    public BeerRepositoryImpl() {
+    @Autowired
+    public BeerRepositoryImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+        beers = new ArrayList<>();
+    }
+
+    /*public BeerRepositoryImpl() {
         this.beers = new ArrayList<>();
         beers.add(new Beer(0,
                 "Pirinsko",
@@ -31,11 +40,12 @@ public class BeerRepositoryImpl implements Repository<Beer> {
                 "opisanie na kamenica",
                 BeerType.Lager,
                 BeerStyle.Amber));
-    }
+    }*/
 
     @Override
     public Beer add(Beer beer) {
-        beers.add(beer);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(beer);
         return beer;
     }
 
