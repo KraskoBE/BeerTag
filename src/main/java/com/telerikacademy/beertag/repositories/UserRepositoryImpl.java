@@ -2,6 +2,7 @@ package com.telerikacademy.beertag.repositories;
 
 import com.telerikacademy.beertag.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.stereotype.Repository
@@ -9,7 +10,7 @@ public class UserRepositoryImpl implements Repository<User> {
     private List<User> users;
 
     public UserRepositoryImpl() {
-
+        users = new ArrayList<>();
     }
 
     @Override

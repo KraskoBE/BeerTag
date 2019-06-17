@@ -39,9 +39,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(int id, User user) {
-        checkDuplicateEmail(user);
-
-        return userRepository.update(userRepository.get(id), user);
+        User oldUser = userRepository.get(id);
+        if(!oldUser.getEmail().equals(user.getEmail())) {
+            checkDuplicateEmail(user);
+        }
+        return userRepository.update(oldUser, user);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
                  .collect(Collectors.toList());
 
          if(duplicateEmails.size() > 0) {
-             throw new RuntimeException(String.format("User with the email %s already exists!", user.getEmail()));
+             throw new IllegalArgumentException(String.format("User with the email %s already exists!", user.getEmail()));
          }
     }
 
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         if(duplicateIds.size() > 0) {
-            throw new RuntimeException(String.format("User with the id of %d already exists", user.getId()));
+            throw new IllegalArgumentException(String.format("User with the id of %d already exists", user.getId()));
         }
 
     }
