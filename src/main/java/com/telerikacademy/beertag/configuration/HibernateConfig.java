@@ -16,14 +16,13 @@ import java.util.Properties;
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 public class HibernateConfig {
-    private String dbUrl, dbUsername, dbPassword, dbDialect;
+    private String dbUrl, dbUsername, dbPassword;
 
     @Autowired
     public HibernateConfig(Environment env) {
         this.dbUrl = env.getProperty("database.url");
         this.dbUsername = env.getProperty("database.username");
         this.dbPassword = env.getProperty("database.password");
-        this.dbDialect = env.getProperty("database.dialect");
     }
 
     @Bean
@@ -48,7 +47,7 @@ public class HibernateConfig {
 
     private Properties hibernateProperties() {
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
+        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MariaDB53Dialect");
 
         // Advanced configuration
          hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");

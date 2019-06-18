@@ -1,43 +1,77 @@
 package com.telerikacademy.beertag.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
-@Table(name = "beers")
+@Table(name = "Beers")
 public class Beer {
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BeerId")
     private int id;
 
+    @NotNull
     @Column(name = "Name")
     private String name;
 
+    @NotNull
     @Column(name = "brewery")
     private String brewery;
 
+    @NotNull
     @Column(name = "originCountry")
     private String originCountry;
 
+    @NotNull
     @Column(name = "ABV")
     private double ABV;
 
+    @NotNull
     @Column(name = "Description")
     private String description;
 
+    @NotNull
     @Column(name = "Type")
+    @Enumerated(EnumType.STRING)
     private BeerType type;
 
+    @NotNull
     @Column(name = "Style")
+    @Enumerated(EnumType.STRING)
     private BeerStyle style;
+
+    @ManyToMany
+    @JoinTable(
+            name = "BeerTags",
+            joinColumns = @JoinColumn(name = "BeerId"),
+            inverseJoinColumns = @JoinColumn(name = "TagName")
+    )
+    private List<Tag> beerTags;
+
+    public List<Tag> getBeerTags() {
+        return beerTags;
+    }
+
+    public void setBeerTags(List<Tag> beerTags) {
+        this.beerTags = beerTags;
+    }
+
     //private Image picture;
 
 
     public Beer() {
+       // beerTags =  new ArrayList<>();
     }
 
     /*public Beer(int id, String name, String brewery, String originCountry, double ABV, String description, BeerType type, BeerStyle style) {

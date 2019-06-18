@@ -1,10 +1,9 @@
 package com.telerikacademy.beertag.repositories;
 
 import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.constants.BeerStyle;
-import com.telerikacademy.beertag.models.constants.BeerType;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -13,12 +12,12 @@ import java.util.List;
 @org.springframework.stereotype.Repository("BeerRepository")
 public class BeerRepositoryImpl implements Repository<Beer> {
     private SessionFactory sessionFactory;
-    private List<Beer> beers;
+    //private List<Beer> beers;
 
     @Autowired
     public BeerRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        beers = new ArrayList<>();
+        //beers = new ArrayList<>();
     }
 
     /*public BeerRepositoryImpl() {
@@ -51,31 +50,41 @@ public class BeerRepositoryImpl implements Repository<Beer> {
 
     @Override
     public Beer get(int id) {
-        return beers.stream()
+        /*return beers.stream()
                 .filter(x -> x.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Beer with id: %d not found.", id)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Beer with id: %d not found.", id)));*/
+
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Beer.class, id);
     }
 
     @Override
     public Beer update(Beer oldBeer, Beer newBeer) {
-        oldBeer.setName(newBeer.getName());
+
+
+        Session session = sessionFactory.getCurrentSession();
+        session.update(newBeer);
+        /*oldBeer.setName(newBeer.getName());
         oldBeer.setBrewery(newBeer.getBrewery());
         oldBeer.setOriginCountry(newBeer.getOriginCountry());
         oldBeer.setABV(newBeer.getABV());
         oldBeer.setDescription(newBeer.getDescription());
         oldBeer.setType(newBeer.getType());
-        oldBeer.setStyle(newBeer.getStyle());
+        oldBeer.setStyle(newBeer.getStyle());*/
         return oldBeer;
     }
 
     @Override
     public void remove(Beer beer) {
-        beers.remove(beer);
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(beer);
     }
 
     @Override
     public List<Beer> getAll() {
-        return beers;
+        Session session = sessionFactory.getCurrentSession();
+        Query<Beer> query = session.createQuery("from Beer", Beer.class);
+        return query.list();
     }
 }
