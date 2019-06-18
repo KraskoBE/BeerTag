@@ -1,14 +1,10 @@
 package com.telerikacademy.beertag.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -26,11 +22,11 @@ public class Beer {
     private String name;
 
     @NotNull
-    @Column(name = "brewery")
+    @Column(name = "Brewery")
     private String brewery;
 
     @NotNull
-    @Column(name = "originCountry")
+    @Column(name = "OriginCountry")
     private String originCountry;
 
     @NotNull
@@ -55,15 +51,15 @@ public class Beer {
     @JoinTable(
             name = "BeerTags",
             joinColumns = @JoinColumn(name = "BeerId"),
-            inverseJoinColumns = @JoinColumn(name = "TagName")
+            inverseJoinColumns = @JoinColumn(name = "TagId")
     )
-    private List<Tag> beerTags;
+    private Set<Tag> beerTags;
 
-    public List<Tag> getBeerTags() {
+    public Set<Tag> getBeerTags() {
         return beerTags;
     }
 
-    public void setBeerTags(List<Tag> beerTags) {
+    public void setBeerTags(Set<Tag> beerTags) {
         this.beerTags = beerTags;
     }
 
@@ -71,7 +67,7 @@ public class Beer {
 
 
     public Beer() {
-       // beerTags =  new ArrayList<>();
+        // beerTags =  new ArrayList<>();
     }
 
     /*public Beer(int id, String name, String brewery, String originCountry, double ABV, String description, BeerType type, BeerStyle style) {

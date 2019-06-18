@@ -1,6 +1,7 @@
 package com.telerikacademy.beertag.repositories;
 
 import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.Tag;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -12,10 +13,12 @@ import java.util.List;
 @org.springframework.stereotype.Repository("BeerRepository")
 public class BeerRepositoryImpl implements Repository<Beer> {
     private SessionFactory sessionFactory;
+    private Repository<Tag> tagRepository;
 
     @Autowired
-    public BeerRepositoryImpl(SessionFactory sessionFactory) {
+    public BeerRepositoryImpl(SessionFactory sessionFactory, Repository<Tag> tagRepository) {
         this.sessionFactory = sessionFactory;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -33,7 +36,8 @@ public class BeerRepositoryImpl implements Repository<Beer> {
 
     @Override
     public Beer update(Beer oldBeer, Beer newBeer) {
-        Session session = sessionFactory.getCurrentSession();Transaction transaction = session.beginTransaction();
+        Session session = sessionFactory.getCurrentSession();
+        Transaction transaction = session.beginTransaction();
 
         oldBeer.setName(newBeer.getName());
         oldBeer.setBrewery(newBeer.getBrewery());
@@ -42,7 +46,7 @@ public class BeerRepositoryImpl implements Repository<Beer> {
         oldBeer.setDescription(newBeer.getDescription());
         oldBeer.setType(newBeer.getType());
         oldBeer.setStyle(newBeer.getStyle());
-
+        oldBeer.getBeerTags().add(tagRepository.get(1));
         session.update(oldBeer);
         transaction.commit();
         return oldBeer;

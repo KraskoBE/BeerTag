@@ -31,8 +31,10 @@ public class BeerServiceImpl implements Service<Beer> {
 
     @Override
     public Beer get(int id) {
-
-        return this.beerRepository.get(id);
+        Beer beer = this.beerRepository.get(id);
+        if (beer == null)
+            throw new IllegalArgumentException(String.format("Beer with id %d not found.", id));
+        return beer;
     }
 
     @Override
