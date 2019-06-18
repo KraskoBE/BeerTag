@@ -31,6 +31,7 @@ public class BeerServiceImpl implements Service<Beer> {
 
     @Override
     public Beer get(int id) {
+
         return this.beerRepository.get(id);
     }
 
