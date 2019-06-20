@@ -48,11 +48,12 @@ public class UserRepositoryImpl implements Repository<User> {
     }
 
     @Override
-    public void remove(User user) {
+    public User remove(User user) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         session.delete(user);
         transaction.commit();
+        return user;
     }
 
     @Override

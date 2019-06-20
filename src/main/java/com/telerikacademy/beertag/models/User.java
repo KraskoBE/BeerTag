@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "Users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,9 @@ public class User {
     )
     @JsonIgnore
     private List<Beer> drankList;
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserRatingBeer> userRatingBeers;
 
     public User() {
     }

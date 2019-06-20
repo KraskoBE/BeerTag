@@ -10,7 +10,7 @@ public interface Repository<T> {
 
     T update(T oldObject, T newObject);
 
-    void remove(T object);
+    T remove(T object);
 
     List<T> getAll();
 

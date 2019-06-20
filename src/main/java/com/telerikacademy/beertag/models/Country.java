@@ -4,20 +4,23 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Tags")
-public class Tag {
-
+@Table(name = "Countries")
+public class Country {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagId")
+    @Column(name = "CountryId")
     private int id;
 
     @NotNull
-    @Column(name = "Name", unique = true, length = 10)
+    @Column(name = "CountryCode", unique = true, length = 100)
+    private String code;
+
+    @NotNull
+    @Column(name = "CountryName", unique = true, length = 100)
     private String name;
 
-    public Tag() {
+    public Country() {
     }
 
     public int getId() {
@@ -28,6 +31,14 @@ public class Tag {
         this.id = id;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
     }
@@ -35,4 +46,5 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
+
 }

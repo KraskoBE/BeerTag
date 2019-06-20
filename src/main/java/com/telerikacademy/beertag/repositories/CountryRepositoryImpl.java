@@ -1,6 +1,7 @@
 package com.telerikacademy.beertag.repositories;
 
-import com.telerikacademy.beertag.models.Tag;
+import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.Country;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -9,51 +10,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@org.springframework.stereotype.Repository("TagRepository")
-public class TagRepositoryImpl implements Repository<Tag> {
+@org.springframework.stereotype.Repository("CountryRepository")
+public class CountryRepositoryImpl implements Repository<Country> {
+    private SessionFactory sessionFactory;
+
     @Autowired
-    public TagRepositoryImpl(SessionFactory sessionFactory) {
+    public CountryRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    private SessionFactory sessionFactory;
-
     @Override
-    public Tag add(Tag tag) {
+    public Country add(Country country) {
         Session session = sessionFactory.getCurrentSession();
-        tag.setName(tag.getName().toLowerCase());
-        session.save(tag);
-        return tag;
+        session.save(country);
+        return country;
     }
 
     @Override
-    public Tag get(int id) {
+    public Country get(int id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Tag.class, id);
+        return session.get(Country.class, id);
     }
 
     @Override
-    public Tag update(Tag oldTag, Tag newTag) {
+    public Country update(Country oldCountry, Country newCountry) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        session.update(oldTag);
+
+        oldCountry.setName(newCountry.getName());
+
+        session.update(oldCountry);
         transaction.commit();
-        return oldTag;
+        return oldCountry;
     }
 
     @Override
-    public Tag remove(Tag tag) {
+    public Country remove(Country country) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        session.delete(tag);
+        session.delete(country);
         transaction.commit();
-        return tag;
+        return country;
     }
 
     @Override
-    public List<Tag> getAll() {
+    public List<Country> getAll() {
         Session session = sessionFactory.getCurrentSession();
-        Query<Tag> query = session.createQuery("from Tag", Tag.class);
+        Query<Country> query = session.createQuery("from Country ", Country.class);
         return query.list();
     }
 }

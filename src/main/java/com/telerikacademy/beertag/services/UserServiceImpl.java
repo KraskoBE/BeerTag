@@ -47,8 +47,8 @@ public class UserServiceImpl implements com.telerikacademy.beertag.services.Serv
     }
 
     @Override
-    public void remove(int id) {
-        userRepository.remove(userRepository.get(id));
+    public User remove(int id) {
+        return userRepository.remove(userRepository.get(id));
     }
 
     private void checkDuplicateEmail(User user) {

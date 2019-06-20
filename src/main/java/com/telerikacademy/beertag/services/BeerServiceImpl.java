@@ -1,6 +1,7 @@
 package com.telerikacademy.beertag.services;
 
 import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.Country;
 import com.telerikacademy.beertag.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,10 +12,12 @@ import java.util.stream.Collectors;
 public class BeerServiceImpl implements Service<Beer> {
 
     private Repository<Beer> beerRepository;
+    private Repository<Country> countryRepository;
 
     @Autowired
-    public BeerServiceImpl(Repository<Beer> beerRepository) {
+    public BeerServiceImpl(Repository<Beer> beerRepository, Repository<Country> countryRepository) {
         this.beerRepository = beerRepository;
+        this.countryRepository = countryRepository;
     }
 
     @Override
@@ -26,12 +29,14 @@ public class BeerServiceImpl implements Service<Beer> {
         if (beers.size() > 0) {
             throw new IllegalArgumentException("Beer already exists");
         }
-        return this.beerRepository.add(beer);
+
+        beer.setOriginCountry(countryRepository.get(beer.getOriginCountry().getId()));
+        return beerRepository.add(beer);
     }
 
     @Override
     public Beer get(int id) {
-        Beer beer = this.beerRepository.get(id);
+        Beer beer = beerRepository.get(id);
         if (beer == null)
             throw new IllegalArgumentException(String.format("Beer with id %d not found.", id));
         return beer;
@@ -40,16 +45,16 @@ public class BeerServiceImpl implements Service<Beer> {
     @Override
     public Beer update(int id, Beer newBeer) {
         Beer oldBeer = get(id);
-        return this.beerRepository.update(oldBeer, newBeer);
+        return beerRepository.update(oldBeer, newBeer);
     }
 
     @Override
-    public void remove(int id) {
-        this.beerRepository.remove(get(id));
+    public Beer remove(int id) {
+        return beerRepository.remove(get(id));
     }
 
     @Override
     public List<Beer> getAll() {
-        return this.beerRepository.getAll();
+        return beerRepository.getAll();
     }
 }

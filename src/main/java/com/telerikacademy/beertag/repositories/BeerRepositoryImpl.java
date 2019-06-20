@@ -13,18 +13,17 @@ import java.util.List;
 @org.springframework.stereotype.Repository("BeerRepository")
 public class BeerRepositoryImpl implements Repository<Beer> {
     private SessionFactory sessionFactory;
-    private Repository<Tag> tagRepository;
 
     @Autowired
-    public BeerRepositoryImpl(SessionFactory sessionFactory, Repository<Tag> tagRepository) {
+    public BeerRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.tagRepository = tagRepository;
     }
 
     @Override
     public Beer add(Beer beer) {
         Session session = sessionFactory.getCurrentSession();
         session.save(beer);
+
         return beer;
     }
 
@@ -46,18 +45,19 @@ public class BeerRepositoryImpl implements Repository<Beer> {
         oldBeer.setDescription(newBeer.getDescription());
         oldBeer.setType(newBeer.getType());
         oldBeer.setStyle(newBeer.getStyle());
-        oldBeer.getBeerTags().add(tagRepository.get(1));
+
         session.update(oldBeer);
         transaction.commit();
         return oldBeer;
     }
 
     @Override
-    public void remove(Beer beer) {
+    public Beer remove(Beer beer) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         session.delete(beer);
         transaction.commit();
+        return beer;
     }
 
     @Override

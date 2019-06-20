@@ -21,28 +21,23 @@ public class Beer {
     @Column(name = "Name")
     private String name;
 
-    @NotNull
     @Column(name = "Brewery")
     private String brewery;
 
-    @NotNull
-    @Column(name = "OriginCountry")
-    private String originCountry;
+    @ManyToOne
+    @JoinColumn(name = "CountryId")
+    private Country originCountry;
 
-    @NotNull
     @Column(name = "ABV")
     private double ABV;
 
-    @NotNull
     @Column(name = "Description")
     private String description;
 
-    @NotNull
     @Column(name = "Type")
     @Enumerated(EnumType.STRING)
     private BeerType type;
 
-    @NotNull
     @Column(name = "Style")
     @Enumerated(EnumType.STRING)
     private BeerStyle style;
@@ -55,6 +50,13 @@ public class Beer {
     )
     private Set<Tag> beerTags;
 
+    @OneToMany(mappedBy = "beer")
+    private Set<UserRatingBeer> userRatingBeers;
+
+
+    public Beer() {
+    }
+
     public Set<Tag> getBeerTags() {
         return beerTags;
     }
@@ -62,24 +64,6 @@ public class Beer {
     public void setBeerTags(Set<Tag> beerTags) {
         this.beerTags = beerTags;
     }
-
-    //private Image picture;
-
-
-    public Beer() {
-        // beerTags =  new ArrayList<>();
-    }
-
-    /*public Beer(int id, String name, String brewery, String originCountry, double ABV, String description, BeerType type, BeerStyle style) {
-        this.id = id;
-        this.name = name;
-        this.brewery = brewery;
-        this.originCountry = originCountry;
-        this.ABV = ABV;
-        this.description = description;
-        this.type = type;
-        this.style = style;
-    }*/
 
     public int getId() {
         return id;
@@ -105,11 +89,11 @@ public class Beer {
         this.brewery = brewery;
     }
 
-    public String getOriginCountry() {
+    public Country getOriginCountry() {
         return originCountry;
     }
 
-    public void setOriginCountry(String originCountry) {
+    public void setOriginCountry(Country originCountry) {
         this.originCountry = originCountry;
     }
 
