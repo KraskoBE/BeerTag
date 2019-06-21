@@ -1,5 +1,6 @@
 package com.telerikacademy.beertag.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
 
@@ -50,19 +51,31 @@ public class Beer {
     )
     private Set<Tag> beerTags;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "beer")
-    private Set<UserRatingBeer> userRatingBeers;
+    private Set<BeerRating> beerRatings;
+
+
+    @Column(name = "AverageRating")
+    public Double getAverageRating() {
+        if (beerRatings == null)
+            return 0.0;
+        return beerRatings.stream()
+                .mapToDouble(BeerRating::getRating)
+                .average()
+                .orElse(0);
+    }
+
+
+    @Column(name = "TotalVotes")
+    public Integer getTotalVotes() {
+        if (beerRatings == null)
+            return 0;
+        return beerRatings.size();
+    }
 
 
     public Beer() {
-    }
-
-    public Set<Tag> getBeerTags() {
-        return beerTags;
-    }
-
-    public void setBeerTags(Set<Tag> beerTags) {
-        this.beerTags = beerTags;
     }
 
     public int getId() {
@@ -127,5 +140,21 @@ public class Beer {
 
     public void setStyle(BeerStyle style) {
         this.style = style;
+    }
+
+    public Set<Tag> getBeerTags() {
+        return beerTags;
+    }
+
+    public void setBeerTags(Set<Tag> beerTags) {
+        this.beerTags = beerTags;
+    }
+
+    public Set<BeerRating> getBeerRatings() {
+        return beerRatings;
+    }
+
+    public void setBeerRatings(Set<BeerRating> beerRatings) {
+        this.beerRatings = beerRatings;
     }
 }

@@ -1,7 +1,6 @@
 package com.telerikacademy.beertag.repositories;
 
-import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.Country;
+import com.telerikacademy.beertag.models.Image;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,52 +9,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@org.springframework.stereotype.Repository("CountryRepository")
-public class CountryRepositoryImpl implements Repository<Country, Integer> {
+@org.springframework.stereotype.Repository("ImageRepository")
+public class ImageRepositoryImpl implements Repository<Image, Integer> {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public CountryRepositoryImpl(SessionFactory sessionFactory) {
+    public ImageRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public Country add(Country country) {
+    public Image add(Image image) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(country);
-        return country;
+        session.save(image);
+        return image;
     }
 
     @Override
-    public Country get(Integer id) {
+    public Image get(Integer id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Country.class, id);
+        return session.get(Image.class, id);
     }
 
     @Override
-    public Country update(Country oldCountry, Country newCountry) {
+    public Image update(Image oldImage, Image newImage) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
 
-        oldCountry.setName(newCountry.getName());
+        oldImage.setBytes(newImage.getBytes());
 
-        session.update(oldCountry);
         transaction.commit();
-        return oldCountry;
+        return oldImage;
     }
 
     @Override
-    public void remove(Country country) {
+    public void remove(Image image) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        session.delete(country);
+        session.remove(image);
         transaction.commit();
     }
 
     @Override
-    public List<Country> getAll() {
+    public List<Image> getAll() {
         Session session = sessionFactory.getCurrentSession();
-        Query<Country> query = session.createQuery("from Country", Country.class);
+        Query<Image> query = session.createQuery("from Image", Image.class);
         return query.list();
     }
+
+    /*public Image updateByBytes(Image image, byte[] bytes)
+    {
+        Session session = sessionFactory.getCurrentSession();
+        Transaction transaction = session.beginTransaction();
+
+        image.setBytes(bytes);
+
+        transaction.commit();
+        return image;
+    }*/
 }

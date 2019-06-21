@@ -1,16 +1,17 @@
 package com.telerikacademy.beertag.repositories;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface Repository<T> {
+public interface Repository<T, ID extends Serializable> {
     T add(T object);
 
-    T get(int id);
+    T get(ID id);
 
     T update(T oldObject, T newObject);
 
-    T remove(T object);
+    void remove(T object);
 
     List<T> getAll();
 

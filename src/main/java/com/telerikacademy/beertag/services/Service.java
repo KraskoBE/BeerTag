@@ -1,16 +1,17 @@
 package com.telerikacademy.beertag.services;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface Service<T> {
+public interface Service<T, ID extends Serializable> {
     T add(T object);
 
-    T get(int id);
+    T get(ID id);
 
-    T update(int id, T newObject);
+    T update(ID id, T newObject);
 
-    T remove(int id);
+    void remove(ID id);
 
     List<T> getAll();
 }

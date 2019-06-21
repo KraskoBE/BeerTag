@@ -2,11 +2,16 @@ package com.telerikacademy.beertag.models;
 
 import java.io.Serializable;
 
-public class UserRatingBeerId implements Serializable {
+public class BeerRatingId implements Serializable {
     private int user;
     private int beer;
 
-    public UserRatingBeerId() {
+    public BeerRatingId() {
+    }
+
+    public BeerRatingId(int user, int beer) {
+        this.user = user;
+        this.beer = beer;
     }
 
     public int getUser() {

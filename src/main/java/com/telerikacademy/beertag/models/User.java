@@ -3,9 +3,12 @@ package com.telerikacademy.beertag.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Users")
@@ -15,12 +18,14 @@ public class User {
     @Column(name = "UserId")
     private int id;
 
+    @NotNull
     @Column(name = "Email")
     private String email;
 
     @Column(name = "Password")
     private String password;
 
+    @NotNull
     @Column(name = "Name")
     private String name;
 
@@ -34,7 +39,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "BeerId")
     )
     @JsonIgnore
-    private List<Beer> wishList;
+    private Set<Beer> wishList;
 
     @ManyToMany
     @JoinTable(
@@ -43,10 +48,29 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "BeerId")
     )
     @JsonIgnore
-    private List<Beer> drankList;
+    private Set<Beer> drankList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private Set<UserRatingBeer> userRatingBeers;
+    private Set<BeerRating> beerRatings;
+
+    @Column(name = "WishListIds")
+    public Set<Integer> getWishListIds()
+    {
+        return wishList.stream()
+                .map(Beer::getId)
+                .collect(Collectors.toSet());
+    }
+
+
+    @Column(name = "DrankListIds")
+    public Set<Integer> getDrankListIds()
+    {
+        return drankList.stream()
+                .map(Beer::getId)
+                .collect(Collectors.toSet());
+    }
+
 
     public User() {
     }
@@ -58,8 +82,8 @@ public class User {
 
         this.name = name;
         this.age = age;
-        wishList = new ArrayList<>();
-        drankList = new ArrayList<>();
+        wishList = new HashSet<>();
+        drankList = new HashSet<>();
     }
 
 
@@ -103,11 +127,11 @@ public class User {
         this.age = age;
     }
 
-    public List<Beer> getWishList() {
+    public Set<Beer> getWishList() {
         return wishList;
     }
 
-    public List<Beer> getDrankList() {
+    public Set<Beer> getDrankList() {
         return drankList;
     }
 }

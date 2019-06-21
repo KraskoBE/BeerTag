@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service("TagService")
-public class TagServiceImpl implements Service<Tag> {
+public class TagServiceImpl implements Service<Tag, Integer> {
 
-    private Repository<Tag> tagRepository;
+    private Repository<Tag, Integer> tagRepository;
 
     @Autowired
-    public TagServiceImpl(Repository<Tag> tagRepository) {
+    public TagServiceImpl(Repository<Tag, Integer> tagRepository) {
         this.tagRepository = tagRepository;
     }
 
@@ -30,7 +30,7 @@ public class TagServiceImpl implements Service<Tag> {
     }
 
     @Override
-    public Tag get(int id) {
+    public Tag get(Integer id) {
         Tag tag = tagRepository.get(id);
         if (tag == null)
             throw new IllegalArgumentException(String.format("Tag with id %d not found.", id));
@@ -38,15 +38,15 @@ public class TagServiceImpl implements Service<Tag> {
     }
 
     @Override
-    public Tag update(int id, Tag newTag) {
+    public Tag update(Integer id, Tag newTag) {
 
         Tag oldTag = get(id);
         return tagRepository.update(oldTag, newTag);
     }
 
     @Override
-    public Tag remove(int id) {
-        return tagRepository.remove(get(id));
+    public void remove(Integer id) {
+        tagRepository.remove(get(id));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.telerikacademy.beertag.controllers;
 
 import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.services.Service;
+import com.telerikacademy.beertag.services.BeerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/api/beers")
 public class BeerController {
 
-    private Service<Beer> beerService;
+    private BeerServiceImpl beerService;
 
     @Autowired
-    public BeerController(Service<Beer> beerService) {
+    public BeerController(BeerServiceImpl beerService) {
         this.beerService = beerService;
     }
 
@@ -56,4 +56,5 @@ public class BeerController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
+
 }

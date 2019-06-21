@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @org.springframework.stereotype.Repository("TagRepository")
-public class TagRepositoryImpl implements Repository<Tag> {
+public class TagRepositoryImpl implements Repository<Tag, Integer> {
     @Autowired
     public TagRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -27,7 +27,7 @@ public class TagRepositoryImpl implements Repository<Tag> {
     }
 
     @Override
-    public Tag get(int id) {
+    public Tag get(Integer id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Tag.class, id);
     }
@@ -42,12 +42,11 @@ public class TagRepositoryImpl implements Repository<Tag> {
     }
 
     @Override
-    public Tag remove(Tag tag) {
+    public void remove(Tag tag) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         session.delete(tag);
         transaction.commit();
-        return tag;
     }
 
     @Override

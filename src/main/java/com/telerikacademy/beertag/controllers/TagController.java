@@ -2,6 +2,7 @@ package com.telerikacademy.beertag.controllers;
 
 import com.telerikacademy.beertag.models.Tag;
 import com.telerikacademy.beertag.services.Service;
+import com.telerikacademy.beertag.services.TagServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
-    private Service<Tag> tagService;
+    private TagServiceImpl tagService;
 
     @Autowired
-    public TagController(Service<Tag> tagService) {
+    public TagController(TagServiceImpl tagService) {
         this.tagService = tagService;
     }
 
     @GetMapping
-    public List<Tag> getAll(){
+    public List<Tag> getAll() {
         return tagService.getAll();
     }
 

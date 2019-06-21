@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @org.springframework.stereotype.Repository("BeerRepository")
-public class BeerRepositoryImpl implements Repository<Beer> {
+public class BeerRepositoryImpl implements Repository<Beer, Integer> {
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -28,7 +28,7 @@ public class BeerRepositoryImpl implements Repository<Beer> {
     }
 
     @Override
-    public Beer get(int id) {
+    public Beer get(Integer id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Beer.class, id);
     }
@@ -52,12 +52,11 @@ public class BeerRepositoryImpl implements Repository<Beer> {
     }
 
     @Override
-    public Beer remove(Beer beer) {
+    public void remove(Beer beer) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         session.delete(beer);
         transaction.commit();
-        return beer;
     }
 
     @Override

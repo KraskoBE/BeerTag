@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @org.springframework.stereotype.Repository("UserRepository")
-public class UserRepositoryImpl implements Repository<User> {
+public class UserRepositoryImpl implements Repository<User, Integer> {
     private SessionFactory sessionFactory;
     private List<User> users;
 
@@ -24,12 +25,14 @@ public class UserRepositoryImpl implements Repository<User> {
     @Override
     public User add(User user) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(user);
+        Transaction transaction = session.beginTransaction();
+        session.saveOrUpdate(user);
+        transaction.commit();
         return user;
     }
 
     @Override
-    public User get(int id) {
+    public User get(Integer id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(User.class, id);
     }
@@ -48,12 +51,11 @@ public class UserRepositoryImpl implements Repository<User> {
     }
 
     @Override
-    public User remove(User user) {
+    public void remove(User user) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
         session.delete(user);
         transaction.commit();
-        return user;
     }
 
     @Override

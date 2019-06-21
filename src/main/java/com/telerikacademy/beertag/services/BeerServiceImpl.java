@@ -1,6 +1,8 @@
 package com.telerikacademy.beertag.services;
 
 import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.BeerRating;
+import com.telerikacademy.beertag.models.BeerRatingId;
 import com.telerikacademy.beertag.models.Country;
 import com.telerikacademy.beertag.repositories.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +11,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service("BeerService")
-public class BeerServiceImpl implements Service<Beer> {
+public class BeerServiceImpl implements Service<Beer, Integer> {
 
-    private Repository<Beer> beerRepository;
-    private Repository<Country> countryRepository;
+    private Repository<Beer, Integer> beerRepository;
+    private Repository<Country, Integer> countryRepository;
+    private Repository<BeerRating, BeerRatingId> beerRatingRepository;
 
     @Autowired
-    public BeerServiceImpl(Repository<Beer> beerRepository, Repository<Country> countryRepository) {
+    public BeerServiceImpl(Repository<Beer, Integer> beerRepository,
+                           Repository<Country, Integer> countryRepository,
+                           Repository<BeerRating, BeerRatingId> beerRatingRepository) {
         this.beerRepository = beerRepository;
         this.countryRepository = countryRepository;
+        this.beerRatingRepository = beerRatingRepository;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class BeerServiceImpl implements Service<Beer> {
     }
 
     @Override
-    public Beer get(int id) {
+    public Beer get(Integer id) {
         Beer beer = beerRepository.get(id);
         if (beer == null)
             throw new IllegalArgumentException(String.format("Beer with id %d not found.", id));
@@ -43,14 +49,14 @@ public class BeerServiceImpl implements Service<Beer> {
     }
 
     @Override
-    public Beer update(int id, Beer newBeer) {
+    public Beer update(Integer id, Beer newBeer) {
         Beer oldBeer = get(id);
         return beerRepository.update(oldBeer, newBeer);
     }
 
     @Override
-    public Beer remove(int id) {
-        return beerRepository.remove(get(id));
+    public void remove(Integer id) {
+        beerRepository.remove(get(id));
     }
 
     @Override

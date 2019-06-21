@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service("CountryService")
-public class CountryServiceImpl implements Service<Country> {
-    private Repository<Country> countryRepository;
+public class CountryServiceImpl implements Service<Country, Integer> {
+    private Repository<Country, Integer> countryRepository;
 
     @Autowired
-    public CountryServiceImpl(Repository<Country> countryRepository) {
+    public CountryServiceImpl(Repository<Country, Integer> countryRepository) {
         this.countryRepository = countryRepository;
     }
 
@@ -31,7 +31,7 @@ public class CountryServiceImpl implements Service<Country> {
     }
 
     @Override
-    public Country get(int id) {
+    public Country get(Integer id) {
         Country country = countryRepository.get(id);
         if (country == null)
             throw new IllegalArgumentException(String.format("Country with id %d not found.", id));
@@ -39,14 +39,14 @@ public class CountryServiceImpl implements Service<Country> {
     }
 
     @Override
-    public Country update(int id, Country newCountry) {
+    public Country update(Integer id, Country newCountry) {
         Country oldCountry = get(id);
         return countryRepository.update(oldCountry, newCountry);
     }
 
     @Override
-    public Country remove(int id) {
-        return countryRepository.remove(get(id));
+    public void remove(Integer id) {
+        countryRepository.remove(get(id));
     }
 
     @Override
