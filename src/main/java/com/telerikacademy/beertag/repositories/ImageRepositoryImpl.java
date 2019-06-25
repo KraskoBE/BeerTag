@@ -57,14 +57,4 @@ public class ImageRepositoryImpl implements Repository<Image, Integer> {
         return query.list();
     }
 
-    /*public Image updateByBytes(Image image, byte[] bytes)
-    {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-
-        image.setBytes(bytes);
-
-        transaction.commit();
-        return image;
-    }*/
 }

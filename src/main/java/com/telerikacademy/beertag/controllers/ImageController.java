@@ -7,8 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 
 @RestController
 @RequestMapping("/api/images")
@@ -20,30 +21,27 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/{id}")
-    public Image getById(@PathVariable int id) {
-        try {
-            return imageService.get(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-        }
-    }
-
     @PostMapping
-    public Image create(@RequestBody Image image) {
+    public Image create(@RequestParam(name = "image") MultipartFile imageData) {
         try {
+            Image image = new Image();
+            image.setBytes(imageData.getBytes());
             return imageService.add(image);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IOException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
         }
     }
 
-    /*@PutMapping("/{id}")
-    public Image update(@PathVariable(name = "id") int id, @RequestBody MultipartFile image) {
+    @GetMapping("/{id}")
+    public void get(@PathVariable int id, HttpServletResponse response) {
         try {
-            return imageService.updateByBytes(id, image.getBytes());
-        } catch (Exception e) {
+            response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+            response.getOutputStream().write(imageService.get(id).getBytes());
+
+            response.getOutputStream().close();
+
+        } catch (IllegalArgumentException | IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-    }*/
+    }
 }

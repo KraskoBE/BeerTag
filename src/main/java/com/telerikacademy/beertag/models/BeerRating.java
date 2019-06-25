@@ -1,8 +1,6 @@
 package com.telerikacademy.beertag.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 @Entity
 @IdClass(BeerRatingId.class)
