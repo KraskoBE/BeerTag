@@ -1,10 +1,8 @@
 package com.telerikacademy.beertag.services;
 
-import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.BeerRating;
-import com.telerikacademy.beertag.models.BeerRatingId;
-import com.telerikacademy.beertag.models.User;
-import com.telerikacademy.beertag.repositories.Repository;
+import com.telerikacademy.beertag.models.*;
+import com.telerikacademy.beertag.repositories.BeerRatingRepositoryImpl;
+import com.telerikacademy.beertag.repositories.UserRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -14,14 +12,12 @@ import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service("UserService")
 public class UserServiceImpl implements Service<User, Integer> {
-    private Repository<User, Integer> userRepository;
-    private Service<Beer, Integer> beerService;
-    private Repository<BeerRating, BeerRatingId> beerRatingRepository;
+    private UserRepositoryImpl userRepository;
+    private BeerServiceImpl beerService;
+    private BeerRatingRepositoryImpl beerRatingRepository;
 
     @Autowired
-    public UserServiceImpl(Repository<User, Integer> userRepository,
-                           Service<Beer, Integer> beerService,
-                           Repository<BeerRating, BeerRatingId> beerRatingRepository) {
+    public UserServiceImpl(UserRepositoryImpl userRepository, BeerServiceImpl beerService, BeerRatingRepositoryImpl beerRatingRepository) {
         this.userRepository = userRepository;
         this.beerService = beerService;
         this.beerRatingRepository = beerRatingRepository;
@@ -42,19 +38,16 @@ public class UserServiceImpl implements Service<User, Integer> {
 
     @Override
     public User add(User user) {
-        checkDuplicateId(user);
-
-        checkDuplicateEmail(user);
-
         return userRepository.add(user);
     }
+
 
     @Override
     public User update(Integer id, User user) {
         User oldUser = userRepository.get(id);
-        if (!oldUser.getEmail().equals(user.getEmail())) {
+       /* if (!oldUser.getEmail().equals(user.getEmail())) {
             checkDuplicateEmail(user);
-        }
+        }*/
         return userRepository.update(oldUser, user);
     }
 
@@ -67,7 +60,7 @@ public class UserServiceImpl implements Service<User, Integer> {
         }
     }
 
-    private void checkDuplicateEmail(User user) {
+    /*private void checkDuplicateEmail(User user) {
         List<User> duplicateEmails = userRepository.getAll()
                 .stream()
                 .filter(x -> x.getEmail().equals(user.getEmail()))
@@ -76,7 +69,7 @@ public class UserServiceImpl implements Service<User, Integer> {
         if (duplicateEmails.size() > 0) {
             throw new IllegalArgumentException(String.format("User with the email %s already exists!", user.getEmail()));
         }
-    }
+    }*/
 
     private void checkDuplicateId(User user) {
         List<User> duplicateIds = userRepository.getAll().stream()
@@ -131,5 +124,11 @@ public class UserServiceImpl implements Service<User, Integer> {
 
         user.getWishList().remove(beer);
         userRepository.add(user);
+    }
+
+    public List<String> getAllUsernames() {
+        return getAll().stream()
+                .map(User::getName)
+                .collect(Collectors.toList());
     }
 }

@@ -1,65 +1,62 @@
 package com.telerikacademy.beertag.repositories;
 
-import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.models.UserAuth;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-
-@org.springframework.stereotype.Repository("UserRepository")
-public class UserRepositoryImpl implements Repository<User, Integer> {
+@Repository("UserAuthRepository")
+public class UserAuthRepositoryImpl implements com.telerikacademy.beertag.repositories.Repository<UserAuth, Integer> {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public UserRepositoryImpl(SessionFactory sessionFactory) {
+    public UserAuthRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public User add(User user) {
+    public UserAuth add(UserAuth userAuth) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(userAuth);
+        return userAuth;
+    }
+
+    @Override
+    public UserAuth get(Integer id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(UserAuth.class, id);
+    }
+
+    @Override
+    public UserAuth update(UserAuth oldUserAuth, UserAuth newUserAuth) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        session.saveOrUpdate(user);
+
+        oldUserAuth.setEmail(newUserAuth.getEmail());
+        oldUserAuth.setPassword(newUserAuth.getPassword());
+
         transaction.commit();
-        return user;
+        return oldUserAuth;
+
     }
 
     @Override
-    public User get(Integer id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(User.class, id);
-    }
-
-    @Override
-    public User update(User oldUser, User newUser) {
+    public void remove(UserAuth userAuth) {
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        oldUser.setAge(newUser.getAge());
-        //oldUser.setEmail(newUser.getEmail());
-        oldUser.setName(newUser.getName());
-        //oldUser.setPassword(oldUser.getPassword());
-        session.update(oldUser);
-        transaction.commit();
-        return oldUser;
-    }
-
-    @Override
-    public void remove(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        session.delete(user);
+        session.delete(userAuth);
         transaction.commit();
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserAuth> getAll() {
         Session session = sessionFactory.getCurrentSession();
-        Query<User> query = session.createQuery("FROM User", User.class);
+        Query<UserAuth> query = session.createQuery("FROM UserAuth", UserAuth.class);
         return query.list();
     }
 }

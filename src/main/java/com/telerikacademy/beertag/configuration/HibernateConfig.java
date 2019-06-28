@@ -51,8 +51,8 @@ public class HibernateConfig {
         hibernateProperties.setProperty("hibernate.dialect", dbDialect);
 
         // Advanced configuration
-        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        //hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 
         return hibernateProperties;
     }

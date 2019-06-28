@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,13 +15,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UserId")
     private int id;
-
-    @NotNull
-    @Column(name = "Email")
-    private String email;
-
-    @Column(name = "Password")
-    private String password;
 
     @NotNull
     @Column(name = "Name")
@@ -55,31 +46,26 @@ public class User {
     private Set<BeerRating> beerRatings;
 
     @Column(name = "WishListIds")
-    public Set<Integer> getWishListIds()
-    {
+    public Set<Integer> getWishListIds() {
         return wishList.stream()
                 .map(Beer::getId)
                 .collect(Collectors.toSet());
     }
 
-
     @Column(name = "DrankListIds")
-    public Set<Integer> getDrankListIds()
-    {
+    public Set<Integer> getDrankListIds() {
         return drankList.stream()
                 .map(Beer::getId)
                 .collect(Collectors.toSet());
     }
 
-
     public User() {
+        wishList = new HashSet<>();
+        drankList = new HashSet<>();
     }
 
-    public User(int id, String email, String password, String name, int age) {
+    public User(int id, String name, int age) {
         this.id = id;
-        this.email = email;
-        this.password = password;
-
         this.name = name;
         this.age = age;
         wishList = new HashSet<>();
@@ -93,22 +79,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {

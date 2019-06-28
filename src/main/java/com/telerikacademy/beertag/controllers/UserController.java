@@ -1,29 +1,38 @@
 package com.telerikacademy.beertag.controllers;
 
 import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.FullUserDTO;
 import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.services.UserAuthServiceImpl;
 import com.telerikacademy.beertag.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private UserServiceImpl userService;
+    private UserAuthServiceImpl userAuthService;
 
     @Autowired
-    public UserController(UserServiceImpl service) {
-        this.userService = service;
+    public UserController(UserServiceImpl userService, UserAuthServiceImpl userAuthService) {
+        this.userService = userService;
+        this.userAuthService = userAuthService;
     }
 
     @GetMapping
     public List<User> getAll() {
         return userService.getAll();
+    }
+
+    @GetMapping("/names")
+    public List<String> getAllUserNames() {
+        return userService.getAllUsernames();
     }
 
     @GetMapping("/{id}")
@@ -39,9 +48,10 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public User create(@RequestBody FullUserDTO user) {
         try {
-            return userService.add(user);
+            userAuthService.add(FullUserDTO.toUserAuth(user));
+            return userService.add(FullUserDTO.toUser(user));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
@@ -51,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable int id, @RequestBody @Valid User user) {
+    public User update(@PathVariable int id, @RequestBody User user) {
         try {
             return userService.update(id, user);
         } catch (IllegalArgumentException e) {

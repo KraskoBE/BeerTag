@@ -43,14 +43,14 @@ public class Image {
         this.bytes = compress(bytes);
     }
 
-
-    private static byte[] compress(byte[] in) {
+    public static byte[] compress(byte[] in) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            DeflaterOutputStream deflate = new DeflaterOutputStream(out);
-            deflate.write(in);
-            deflate.flush();
-            deflate.close();
+            DeflaterOutputStream defl = new DeflaterOutputStream(out);
+            defl.write(in);
+            defl.flush();
+            defl.close();
+
 
             System.out.println("Original: " + in.length/1024);
             System.out.println("Compressed: " + out.size()/1024);
@@ -62,13 +62,13 @@ public class Image {
         }
     }
 
-    private static byte[] decompress(byte[] in) {
+    public static byte[] decompress(byte[] in) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InflaterOutputStream inflate = new InflaterOutputStream(out);
-            inflate.write(in);
-            inflate.flush();
-            inflate.close();
+            InflaterOutputStream infl = new InflaterOutputStream(out);
+            infl.write(in);
+            infl.flush();
+            infl.close();
 
             return out.toByteArray();
         } catch (Exception e) {
