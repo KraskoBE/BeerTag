@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,7 +49,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth",
                 roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority()))
-                        .filter(Object::nonNull)
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
 
         Date now = new Date();
