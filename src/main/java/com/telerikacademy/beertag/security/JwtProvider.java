@@ -1,5 +1,7 @@
 package com.telerikacademy.beertag.security;
 
+import com.telerikacademy.beertag.exception.CustomException;
+import com.telerikacademy.beertag.models.constants.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,7 +34,7 @@ public class JwtProvider {
     private long validityInMilliseconds = 3600000; // = 01:00:00
 
     @Autowired
-    private UserAuth userAuth;
+    private MyUserDetails myUserDetails;
 
     @PostConstruct
     protected void init() {
@@ -60,7 +63,7 @@ public class JwtProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userAuth.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -68,7 +71,7 @@ public class JwtProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    public String resolve(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
@@ -76,7 +79,7 @@ public class JwtProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validate(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
