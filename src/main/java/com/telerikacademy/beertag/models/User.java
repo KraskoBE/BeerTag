@@ -1,107 +1,97 @@
 package com.telerikacademy.beertag.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.telerikacademy.beertag.models.constants.UserRole;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "Users")
+@Where(clause = "enabled=1")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserId")
+    @Column(name = "user_id")
     private int id;
 
     @NotNull
-    @Column(name = "Name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "Age")
+    @Column(name = "age")
     private int age;
 
-    @ManyToMany
-    @JoinTable(
-            name = "WishList",
-            joinColumns = @JoinColumn(name = "UserId"),
-            inverseJoinColumns = @JoinColumn(name = "BeerId")
-    )
+    @NotNull
+    @Column(name = "password")
+    private String password;
+
+    @NotNull
+    @Column(name = "email", unique = true)
+    private String email;
+
+    @NotNull
+    @Column(name = "user_role")
+    private UserRole userRole;
+
+    @NotNull
+    @Column(name = "enabled")
+    private boolean enabled = true;
+
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    @OneToMany(mappedBy = "creator")
     @JsonIgnore
-    private Set<Beer> wishList;
+    private List<Beer> createdBeers = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
-            name = "DrankList",
-            joinColumns = @JoinColumn(name = "UserId"),
-            inverseJoinColumns = @JoinColumn(name = "BeerId")
+            name = "wish_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "beer_id")
     )
     @JsonIgnore
-    private Set<Beer> drankList;
+    private Set<Beer> wishList = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "drank_list",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "beer_id")
+    )
+    @JsonIgnore
+    private Set<Beer> drankList = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<BeerRating> beerRatings;
 
-    @Column(name = "WishListIds")
+    @Column(name = "wishlist_ids")
     public Set<Integer> getWishListIds() {
         return wishList.stream()
                 .map(Beer::getId)
                 .collect(Collectors.toSet());
     }
 
-    @Column(name = "DrankListIds")
+    @Column(name = "dranklist_ids")
     public Set<Integer> getDrankListIds() {
         return drankList.stream()
                 .map(Beer::getId)
                 .collect(Collectors.toSet());
-    }
-
-    public User() {
-        wishList = new HashSet<>();
-        drankList = new HashSet<>();
-    }
-
-    public User(int id, String name, int age) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        wishList = new HashSet<>();
-        drankList = new HashSet<>();
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public Set<Beer> getWishList() {
-        return wishList;
-    }
-
-    public Set<Beer> getDrankList() {
-        return drankList;
     }
 }

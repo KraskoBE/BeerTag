@@ -1,16 +1,10 @@
 package com.telerikacademy.beertag.controllers;
 
-import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.FullUserDTO;
 import com.telerikacademy.beertag.models.User;
-import com.telerikacademy.beertag.models.UserAuth;
-import com.telerikacademy.beertag.repositories.UserAuthRepositoryImpl;
-import com.telerikacademy.beertag.services.UserAuthServiceImpl;
-import com.telerikacademy.beertag.services.UserServiceImpl;
+import com.telerikacademy.beertag.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,78 +12,45 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private UserServiceImpl userService;
-    private UserAuthServiceImpl userAuthService;
-    private UserAuthRepositoryImpl userAuthRepository;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserServiceImpl userService, UserAuthServiceImpl userAuthService, UserAuthRepositoryImpl userAuthRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userAuthService = userAuthService;
-        this.userAuthRepository = userAuthRepository;
     }
 
     @GetMapping
-    public List<User> getAll() {
-        return userService.getAll();
-    }
-
-    @GetMapping("/names")
-    public List<String> getAllUserNames() {
-        return userService.getAllUsernames();
+    public List<User> findAll() {
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable int id) {
-        try {
-            return userService.get(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    e.getMessage()
-            );
-        }
+    public ResponseEntity<User> findById(@PathVariable final int id) {
+        return userService.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public User create(@RequestBody FullUserDTO user) {
-        try {
-            UserAuth userAuth = userAuthService.add(FullUserDTO.toUserAuth(user));
-            userAuth.setUser(userService.add(FullUserDTO.toUser(user)));
-            return userAuth.getUser();
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    e.getMessage()
-            );
-        }
+    public ResponseEntity<User> save(@RequestBody final User user) {
+        return userService.save(user)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable int id, @RequestBody User user) {
-        try {
-            return userService.update(id, user);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage()
-            );
-        }
+    public ResponseEntity<User> update(@PathVariable final int id, @RequestBody final User user) {
+        return userService.update(id, user)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
-        try {
-            userService.remove(id);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    e.getMessage()
-            );
-        }
+    public void deleteById(@PathVariable final int id) {
+        userService.deleteById(id);
     }
 
-    @PutMapping("/{id}/rateBeer")
+    /*@PutMapping("/{id}/rateBeer")
     public Beer rateBeer(@PathVariable(name = "id") int userId, @RequestParam int beerId, @RequestParam int rating) {
         if (rating < 0 || rating > 5)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating should be between 0 and 5");
@@ -119,5 +80,5 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-    }
+    }*/
 }

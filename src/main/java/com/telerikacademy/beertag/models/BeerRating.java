@@ -1,9 +1,13 @@
 package com.telerikacademy.beertag.models;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @IdClass(BeerRatingId.class)
+@Table(name="beer_rating")
 public class BeerRating {
     @Id
     @ManyToOne
@@ -15,36 +19,4 @@ public class BeerRating {
 
     private int rating;
 
-    public BeerRating() {
-    }
-
-    public BeerRating(User user, Beer beer, int rating) {
-        this.user = user;
-        this.beer = beer;
-        this.rating = rating;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Beer getBeer() {
-        return beer;
-    }
-
-    public void setBeer(Beer beer) {
-        this.beer = beer;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
 }

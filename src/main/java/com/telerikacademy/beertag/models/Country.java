@@ -1,50 +1,32 @@
 package com.telerikacademy.beertag.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "Countries")
+@Table(name = "countries")
 public class Country {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CountryId")
+    @Column(name = "country_id")
     private int id;
 
     @NotNull
-    @Column(name = "CountryCode", unique = true, length = 100)
+    @Column(name = "code", unique = true, length = 100)
     private String code;
 
     @NotNull
-    @Column(name = "CountryName", unique = true, length = 100)
+    @Column(name = "name", unique = true, length = 100)
     private String name;
 
-    public Country() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @NotNull
+    @Column(name = "enabled")
+    private boolean enabled = true;
 }

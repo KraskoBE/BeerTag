@@ -3,51 +3,65 @@ package com.telerikacademy.beertag.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.BeerStyle;
 import com.telerikacademy.beertag.models.constants.BeerType;
+import lombok.*;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "Beers")
+@Where(clause = "enabled=1")
+@Table(name = "beers")
 public class Beer {
+
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BeerId")
+    @Column(name = "beer_id")
     private int id;
 
     @NotNull
-    @Column(name = "Name")
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User creator;
+
+    @NotNull
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "Brewery")
+    @Column(name = "brewery")
     private String brewery;
 
     @ManyToOne
-    @JoinColumn(name = "CountryId")
+    @JoinColumn(name = "country_id")
     private Country originCountry;
 
-    @Column(name = "ABV")
+    @Column(name = "abv")
     private double ABV;
 
-    @Column(name = "Description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "Type")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private BeerType type;
 
-    @Column(name = "Style")
+    @Column(name = "style")
     @Enumerated(EnumType.STRING)
     private BeerStyle style;
 
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
+
     @ManyToMany
     @JoinTable(
-            name = "BeerTags",
-            joinColumns = @JoinColumn(name = "BeerId"),
-            inverseJoinColumns = @JoinColumn(name = "TagId")
+            name = "beer_tags",
+            joinColumns = @JoinColumn(name = "beer_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> beerTags;
 
@@ -55,8 +69,12 @@ public class Beer {
     @OneToMany(mappedBy = "beer")
     private Set<BeerRating> beerRatings;
 
+    @NotNull
+    @Column(name = "enabled")
+    private boolean enabled = true;
 
-    @Column(name = "AverageRating")
+    //---FIELDS END-------------------------FIELDS END---------------------------
+    @Column(name = "average_rating")
     public Double getAverageRating() {
         if (beerRatings == null)
             return 0.0;
@@ -67,94 +85,11 @@ public class Beer {
     }
 
 
-    @Column(name = "TotalVotes")
+    @Column(name = "total_votes")
     public Integer getTotalVotes() {
         if (beerRatings == null)
             return 0;
         return beerRatings.size();
     }
 
-
-    public Beer() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getBrewery() {
-        return brewery;
-    }
-
-    public void setBrewery(String brewery) {
-        this.brewery = brewery;
-    }
-
-    public Country getOriginCountry() {
-        return originCountry;
-    }
-
-    public void setOriginCountry(Country originCountry) {
-        this.originCountry = originCountry;
-    }
-
-    public double getABV() {
-        return ABV;
-    }
-
-    public void setABV(double ABV) {
-        this.ABV = ABV;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BeerType getType() {
-        return type;
-    }
-
-    public void setType(BeerType type) {
-        this.type = type;
-    }
-
-    public BeerStyle getStyle() {
-        return style;
-    }
-
-    public void setStyle(BeerStyle style) {
-        this.style = style;
-    }
-
-    public Set<Tag> getBeerTags() {
-        return beerTags;
-    }
-
-    public void setBeerTags(Set<Tag> beerTags) {
-        this.beerTags = beerTags;
-    }
-
-    public Set<BeerRating> getBeerRatings() {
-        return beerRatings;
-    }
-
-    public void setBeerRatings(Set<BeerRating> beerRatings) {
-        this.beerRatings = beerRatings;
-    }
 }

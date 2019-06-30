@@ -1,38 +1,32 @@
 package com.telerikacademy.beertag.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
-@Table(name = "Tags")
+@Where(clause = "enabled=1")
+@Table(name = "tags")
 public class Tag {
 
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TagId")
+    @Column(name = "tag_id")
     private int id;
 
     @NotNull
-    @Column(name = "Name", unique = true, length = 10)
+    @Column(name = "name", unique = true, length = 10)
     private String name;
 
-    public Tag() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @NotNull
+    @Column(name = "enabled")
+    private boolean enabled = true;
 }
