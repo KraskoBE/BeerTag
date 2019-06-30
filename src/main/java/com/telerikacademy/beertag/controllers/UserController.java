@@ -3,6 +3,8 @@ package com.telerikacademy.beertag.controllers;
 import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.models.FullUserDTO;
 import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.models.UserAuth;
+import com.telerikacademy.beertag.repositories.UserAuthRepositoryImpl;
 import com.telerikacademy.beertag.services.UserAuthServiceImpl;
 import com.telerikacademy.beertag.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +20,13 @@ import java.util.List;
 public class UserController {
     private UserServiceImpl userService;
     private UserAuthServiceImpl userAuthService;
+    private UserAuthRepositoryImpl userAuthRepository;
 
     @Autowired
-    public UserController(UserServiceImpl userService, UserAuthServiceImpl userAuthService) {
+    public UserController(UserServiceImpl userService, UserAuthServiceImpl userAuthService, UserAuthRepositoryImpl userAuthRepository) {
         this.userService = userService;
         this.userAuthService = userAuthService;
+        this.userAuthRepository = userAuthRepository;
     }
 
     @GetMapping
@@ -50,8 +54,9 @@ public class UserController {
     @PostMapping
     public User create(@RequestBody FullUserDTO user) {
         try {
-            userAuthService.add(FullUserDTO.toUserAuth(user));
-            return userService.add(FullUserDTO.toUser(user));
+            UserAuth userAuth = userAuthService.add(FullUserDTO.toUserAuth(user));
+            userAuth.setUser(userService.add(FullUserDTO.toUser(user)));
+            return userAuth.getUser();
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
