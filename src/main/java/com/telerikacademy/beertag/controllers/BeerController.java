@@ -4,6 +4,7 @@ import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.services.BeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class BeerController {
     }
 
     @GetMapping
+    @PreAuthorize("isAnonymous()")
     public List<Beer> findAll() {
         return beerService.findAll();
     }
