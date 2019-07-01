@@ -1,5 +1,6 @@
 package com.telerikacademy.beertag.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Tag {
     private String name;
 
     @NotNull
+    @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
 }

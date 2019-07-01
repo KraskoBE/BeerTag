@@ -1,8 +1,10 @@
 package com.telerikacademy.beertag.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Data
 @Entity
+@Where(clause = "enabled=1")
 @Table(name = "countries")
 public class Country {
     @Id
@@ -28,5 +31,6 @@ public class Country {
 
     @NotNull
     @Column(name = "enabled")
+    @JsonIgnore
     private boolean enabled = true;
 }

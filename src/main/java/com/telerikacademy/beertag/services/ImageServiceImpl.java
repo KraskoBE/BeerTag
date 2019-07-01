@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -21,18 +20,24 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<Image> findAll() {
-        return imageRepository.findAll();
-    }
-
-    @Override
     public Optional<Image> findById(Integer id) {
         return imageRepository.findById(id);
     }
 
     @Override
     public Optional<Image> save(MultipartFile file) {
-        if (!isFileValid(file))
+        if (isFileInvalid(file))
+            return Optional.empty();
+        try {
+            return Optional.of(imageRepository.save(new Image(file.getBytes())));
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Image> update(Integer id, MultipartFile file) {
+        if (isFileInvalid(file) || !imageRepository.findById(id).isPresent())
             return Optional.empty();
         try {
             return Optional.of(imageRepository.save(new Image(file.getBytes())));
@@ -46,8 +51,8 @@ public class ImageServiceImpl implements ImageService {
         imageRepository.deleteById(id);
     }
 
-    private boolean isFileValid(MultipartFile file) {
-        return Objects.equals(file.getContentType(), "image/jpeg") ||
-                Objects.equals(file.getContentType(), "image/png");
+    private boolean isFileInvalid(MultipartFile file) {
+        return !Objects.equals(file.getContentType(), "image/jpeg") &&
+                !Objects.equals(file.getContentType(), "image/png");
     }
 }

@@ -48,6 +48,7 @@ public class User {
     private UserRole userRole;
 
     @NotNull
+    @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
 
@@ -79,7 +80,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private Set<BeerRating> beerRatings;
+    private Set<BeerRating> beerRatings = new HashSet<>();
 
     @Column(name = "wishlist_ids")
     public Set<Integer> getWishListIds() {

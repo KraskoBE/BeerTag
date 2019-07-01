@@ -1,6 +1,8 @@
 package com.telerikacademy.beertag.controllers;
 
+import com.telerikacademy.beertag.models.Beer;
 import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.services.BeerService;
 import com.telerikacademy.beertag.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,12 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final BeerService beerService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BeerService beerService) {
         this.userService = userService;
+        this.beerService = beerService;
     }
 
     @GetMapping
@@ -50,20 +54,14 @@ public class UserController {
         userService.deleteById(id);
     }
 
-    /*@PutMapping("/{id}/rateBeer")
-    public Beer rateBeer(@PathVariable(name = "id") int userId, @RequestParam int beerId, @RequestParam int rating) {
-        if (rating < 0 || rating > 5)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating should be between 0 and 5");
+    @PutMapping("/rateBeer")
+    public ResponseEntity<Beer> rateBeer(@RequestParam(name = "user_id") int userId, @RequestParam("beer_id") int beerId, @RequestParam("rating") int rating) {
 
-        try {
-            return userService.rateBeer(userId, beerId, rating);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage()
-            );
-
-        }
+       return beerService.rate(userId, beerId, rating)
+               .map(record->ResponseEntity.ok().body(record))
+               .orElse(ResponseEntity.badRequest().build());
     }
-
+/*
     @PutMapping("/{id}/wishBeer")
     public Beer wishBeer(@PathVariable(name = "id") int userId, @RequestParam int beerId) {
         try {

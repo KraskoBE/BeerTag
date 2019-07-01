@@ -33,6 +33,7 @@ public class Image {
     private byte[] bytes;
 
     @NotNull
+    @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
 

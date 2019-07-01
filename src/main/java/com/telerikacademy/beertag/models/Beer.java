@@ -53,6 +53,14 @@ public class Beer {
     @Enumerated(EnumType.STRING)
     private BeerStyle style;
 
+    @NotNull
+    @Column(name = "average_rating")
+    private Double averageRating = 0.0;
+
+    @NotNull
+    @Column(name = "total_votes")
+    private int totalVotes = 0;
+
     @ManyToOne
     @JoinColumn(name = "image_id")
     private Image image;
@@ -70,11 +78,12 @@ public class Beer {
     private Set<BeerRating> beerRatings;
 
     @NotNull
+    @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
 
     //---FIELDS END-------------------------FIELDS END---------------------------
-    @Column(name = "average_rating")
+    /*@Column(name = "average_rating")
     public Double getAverageRating() {
         if (beerRatings == null)
             return 0.0;
@@ -90,6 +99,6 @@ public class Beer {
         if (beerRatings == null)
             return 0;
         return beerRatings.size();
-    }
+    }*/
 
 }
