@@ -1,17 +1,16 @@
 package com.telerikacademy.beertag.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(BeerRatingId.class)
-@Table(name="beer_rating")
+@Table(name = "beer_rating")
 public class BeerRating {
     @Id
     @ManyToOne

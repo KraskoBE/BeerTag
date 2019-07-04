@@ -2,11 +2,11 @@ package com.telerikacademy.beertag.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnJava;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Where(clause = "enabled=1")
 @Table(name = "users")
@@ -36,6 +37,7 @@ public class User implements UserDetails {
     private int age;
 
     @NotNull
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -45,7 +47,7 @@ public class User implements UserDetails {
 
     @NotNull
     @Column(name = "user_role")
-    private UserRole userRole;
+    private UserRole userRole = UserRole.Member;
 
     @NotNull
     @JsonIgnore
@@ -103,21 +105,25 @@ public class User implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority(userRole.toString()));
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return enabled;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return enabled;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return enabled;

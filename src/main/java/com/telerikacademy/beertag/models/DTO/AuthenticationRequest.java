@@ -1,16 +1,13 @@
-package com.telerikacademy.beertag.models;
+package com.telerikacademy.beertag.models.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-
     private String name;
     private String email;
     private String password;
-
 }

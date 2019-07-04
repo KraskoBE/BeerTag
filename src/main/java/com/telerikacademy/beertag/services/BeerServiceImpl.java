@@ -8,7 +8,9 @@ import com.telerikacademy.beertag.repositories.BeerRatingRepository;
 import com.telerikacademy.beertag.repositories.BeerRepository;
 import com.telerikacademy.beertag.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,7 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public Optional<Beer> findById(Integer id) {
+        //throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found");
         return beerRepository.findById(id);
     }
 
@@ -58,37 +61,37 @@ public class BeerServiceImpl implements BeerService {
         beerRepository.deleteById(id);
     }
 
+
     @Override
     public Optional<Beer> rate(Integer userId, Integer beerId, Integer rating) {
         if (rating < 0 || rating > 5)
             return Optional.empty();
 
-        if (!beerRepository.findById(beerId).isPresent() ||
-                !userRepository.findById(userId).isPresent())
-            return Optional.empty();
-        User user = userRepository.findById(userId).get();
-        Beer beer = beerRepository.findById(beerId).get();
+        Optional<Beer> beerOptional = beerRepository.findById(beerId);
+        Optional<User> userOptional = userRepository.findById(userId);
 
+        if (!beerOptional.isPresent() ||
+                !userOptional.isPresent())
+            return Optional.empty();
+
+        Beer beer = beerOptional.get();
+        User user = userOptional.get();
+
+        Optional<BeerRating> beerRating = beerRatingRepository.findById(new BeerRatingId(userId, beerId));
         if (rating == 0) {
-            beerRatingRepository.deleteById(new BeerRatingId(userId, beerId));
+            beerRating.ifPresent(beerRatingRepository::delete);
         } else {
             beerRatingRepository.save(new BeerRating(user, beer, rating));
         }
 
-
-        System.out.println(beer.getBeerRatings().isEmpty());
-        /*System.out.println("dai rekursiqta, gotin:" + beer.getBeerRatings().stream()
+        beer.setAverageRating(beer.getBeerRatings().stream()
                 .mapToDouble(BeerRating::getRating)
                 .average()
-                .orElse(0.0));*/
+                .orElse(0));
 
-        /*beer.setAverageRating(beer.getBeerRatings().stream()
-                .mapToDouble(BeerRating::getRating)
-                .average()
-                .orElse(0.0));*/
+        beer.setTotalVotes(beer.getBeerRatings().size());
 
-        return Optional.of(beer);
+        return beerRepository.findById(beerId);
     }
-
 
 }

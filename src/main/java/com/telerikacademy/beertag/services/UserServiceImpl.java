@@ -2,6 +2,7 @@ package com.telerikacademy.beertag.services;
 
 import com.telerikacademy.beertag.models.User;
 import com.telerikacademy.beertag.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.Optional;
 
 @Service("UserService")
 public class UserServiceImpl implements UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
     }
 
@@ -44,5 +47,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Integer id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<User> register(User user) {
+        Optional<User> oldUser = userRepository.findByEmail(user.getEmail());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (oldUser.isPresent())
+            return Optional.empty();
+        return Optional.of(userRepository.save(user));
     }
 }

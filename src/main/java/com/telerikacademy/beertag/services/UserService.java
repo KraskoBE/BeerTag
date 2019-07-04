@@ -16,4 +16,6 @@ public interface UserService {
     Optional<User> update(Integer id, User user);
 
     void deleteById(Integer id);
+
+    Optional<User> register(User user);
 }

@@ -12,7 +12,8 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Where(clause = "enabled=1")
 @Table(name = "beers")
@@ -100,5 +101,4 @@ public class Beer {
             return 0;
         return beerRatings.size();
     }*/
-
 }

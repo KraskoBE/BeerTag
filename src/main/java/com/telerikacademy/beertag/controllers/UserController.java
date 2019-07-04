@@ -57,9 +57,9 @@ public class UserController {
     @PutMapping("/rateBeer")
     public ResponseEntity<Beer> rateBeer(@RequestParam(name = "user_id") int userId, @RequestParam("beer_id") int beerId, @RequestParam("rating") int rating) {
 
-       return beerService.rate(userId, beerId, rating)
-               .map(record->ResponseEntity.ok().body(record))
-               .orElse(ResponseEntity.badRequest().build());
+        return beerService.rate(userId, beerId, rating)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
     }
 /*
     @PutMapping("/{id}/wishBeer")

@@ -1,9 +1,12 @@
-package com.telerikacademy.beertag.models;
+package com.telerikacademy.beertag.models.DTO;
 
+import com.telerikacademy.beertag.models.User;
 import com.telerikacademy.beertag.models.constants.UserRole;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class FullUserDTO {
 
     private String email;
@@ -21,14 +24,4 @@ public class FullUserDTO {
         return user;
     }
 
-   /*public static UserAuth toUserAuth(FullUserDTO fullUserDTO) {
-        UserAuth userAuth = new UserAuth();
-
-        userAuth.setEmail(fullUserDTO.getEmail());
-        userAuth.setPassword(fullUserDTO.getPassword());
-        userAuth.setEnabled(fullUserDTO.isEnabled());
-        userAuth.setUserRole(fullUserDTO.getUserRole());
-
-        return userAuth;
-    }*/
 }

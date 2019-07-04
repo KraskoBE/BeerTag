@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtFilter extends GenericFilterBean {
@@ -22,9 +23,14 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
+
+        HttpServletResponse response = (HttpServletResponse) res;
+        response.addHeader("Access-Control-Allow-Origin", "http://localhost");
+
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         String token = jwtProvider.resolveToken((HttpServletRequest) req);
         if (token != null && jwtProvider.validateToken(token)) {
-            Authentication auth = token != null ? jwtProvider.getAuthentication(token) : null;
+            Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
         filterChain.doFilter(req, res);
