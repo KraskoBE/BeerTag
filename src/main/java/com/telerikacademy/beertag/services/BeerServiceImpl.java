@@ -1,13 +1,12 @@
 package com.telerikacademy.beertag.services;
 
-import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.BeerRating;
-import com.telerikacademy.beertag.models.BeerRatingId;
-import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.models.*;
 import com.telerikacademy.beertag.repositories.BeerRatingRepository;
 import com.telerikacademy.beertag.repositories.BeerRepository;
 import com.telerikacademy.beertag.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,17 +33,33 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
+    public Page<Beer> findBy(Integer pageNum, String orderBy) {
+        if (pageNum < 0)
+            pageNum = 0;
+        PageRequest pageRequest = PageRequest.of(pageNum, 4);
+        switch (orderBy) {
+            case "abv":
+                return beerRepository.findAllByOrderByABVDesc(pageRequest);
+            case "name":
+                return beerRepository.findAllByOrderByNameAsc(pageRequest);
+            default:
+                return beerRepository.findAllByOrderByAverageRatingDesc(pageRequest);
+        }
+    }
+
+    @Override
     public Optional<Beer> findById(Integer id) {
         //throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found");
         return beerRepository.findById(id);
     }
 
     @Override
-    public Optional<Beer> save(Integer creatorId, Beer beer) {
+    public Optional<Beer> save(Integer creatorId, Beer beer, Image image) {
         Optional<Beer> oldBeer = beerRepository.findByName(beer.getName());
         if (oldBeer.isPresent() || !userRepository.findById(creatorId).isPresent())
             return Optional.empty();
         beer.setCreator(userRepository.findById(creatorId).get());
+        beer.setImage(image);
         return Optional.of(beerRepository.save(beer));
     }
 

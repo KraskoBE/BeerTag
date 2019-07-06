@@ -1,5 +1,6 @@
 package com.telerikacademy.beertag.security;
 
+import com.telerikacademy.beertag.models.User;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +33,13 @@ public class JwtProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, List<String> roles) {
+    public String createToken(User user) {
 
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", roles);
+        Claims claims = Jwts.claims().setSubject(user.getEmail());
+        claims.put("user_id", user.getId());
+        claims.put("roles", user.getUserRole());
+        claims.put("name", user.getName());
+        claims.put("imageId", user.getImage() == null ? 1 : user.getImage().getId());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         return Jwts.builder()//
@@ -49,6 +53,10 @@ public class JwtProvider {
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public int getId(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_id", Integer.class);
     }
 
     public String getUsername(String token) {
