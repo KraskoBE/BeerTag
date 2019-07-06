@@ -1,9 +1,6 @@
 package com.telerikacademy.beertag.service;
 
-import com.telerikacademy.beertag.models.Beer;
-import com.telerikacademy.beertag.models.BeerRating;
-import com.telerikacademy.beertag.models.BeerRatingId;
-import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.models.*;
 import com.telerikacademy.beertag.repositories.BeerRatingRepository;
 import com.telerikacademy.beertag.repositories.BeerRepository;
 import com.telerikacademy.beertag.repositories.UserRepository;
@@ -68,6 +65,7 @@ public class BeerServiceTests {
         //Arrange
         Beer newBeer = new Beer();
         final String NEW = "new";
+        Image image = new Image();
         newBeer.setName(NEW);
         Optional<Beer> oldBeerOptional = Optional.empty();
         Mockito.when(mockBeerRepo.findByName(NEW)).thenReturn(oldBeerOptional);
@@ -82,7 +80,7 @@ public class BeerServiceTests {
         Mockito.when(mockBeerRepo.save(newBeer)).thenReturn(newBeer);
 
         //Act
-        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer);
+        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer, image);
 
         //Assert
         Assert.assertTrue(result.isPresent());
@@ -92,6 +90,7 @@ public class BeerServiceTests {
         //Arrange
         Beer newBeer = new Beer();
         final String NEW = "new";
+        Image image = new Image();
         newBeer.setName(NEW);
         Optional<Beer> oldBeerOptional = Optional.of(newBeer);
         Mockito.when(mockBeerRepo.findByName(NEW)).thenReturn(oldBeerOptional);
@@ -106,7 +105,7 @@ public class BeerServiceTests {
         Mockito.when(mockBeerRepo.save(newBeer)).thenReturn(newBeer);
 
         //Act
-        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer);
+        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer, image);
 
         //Assert
         Assert.assertFalse(result.isPresent());
@@ -116,6 +115,7 @@ public class BeerServiceTests {
         //Arrange
         Beer newBeer = new Beer();
         final String NEW = "new";
+        Image image = new Image();
         newBeer.setName(NEW);
         Optional<Beer> oldBeerOptional = Optional.of(newBeer);
         Mockito.when(mockBeerRepo.findByName(NEW)).thenReturn(oldBeerOptional);
@@ -130,7 +130,7 @@ public class BeerServiceTests {
         Mockito.when(mockBeerRepo.save(newBeer)).thenReturn(newBeer);
 
         //Act
-        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer);
+        Optional<Beer> result = beerService.save(CREATOR_ID, newBeer, image);
 
         //Assert
         Assert.assertFalse(result.isPresent());

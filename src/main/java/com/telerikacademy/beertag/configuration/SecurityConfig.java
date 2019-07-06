@@ -40,13 +40,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/api/images/*").permitAll()
+                .antMatchers("/api/**").permitAll()
+                /*.antMatchers(HttpMethod.GET,"/api/images/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/beers").permitAll()
                 .antMatchers("/api/beers").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/users/").hasRole(UserRole.Member.toString())
-                .anyRequest().authenticated()
+                */.anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtProvider));
     }
+
+
 }

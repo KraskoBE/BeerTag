@@ -1,6 +1,5 @@
 package com.telerikacademy.beertag.controllers.UserControllerTests;
 
-
 import com.telerikacademy.beertag.controllers.JsonHelper;
 import com.telerikacademy.beertag.models.User;
 import com.telerikacademy.beertag.models.constants.UserRole;
@@ -21,15 +20,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerSaveTests {
-
+public class UserControllerUpdateTests {
 
     @MockBean
     UserServiceImpl mockUserService;
@@ -42,7 +40,7 @@ public class UserControllerSaveTests {
 
     @Test
     @WithMockUser(roles={"USER","ADMIN"})
-    public void save_Should_Return_StatusOk_When_Successful() throws Exception {
+    public void update_Should_Return_StatusOk_When_Successful() throws Exception {
         //Arrange
         final String EMAIL = "test@email.com";
         User user = new User();
@@ -50,10 +48,10 @@ public class UserControllerSaveTests {
         user.setEmail(EMAIL);
         user.setUserRole(UserRole.Member);
 
-        Mockito.when(mockUserService.save(user)).thenReturn(Optional.of(user));
+        Mockito.when(mockUserService.update(1,user)).thenReturn(Optional.of(user));
 
         //Act & Assert
-        mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON)
                 .content(JsonHelper.convertObjectToJson(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(EMAIL));
@@ -61,7 +59,7 @@ public class UserControllerSaveTests {
 
     @Test
     @WithMockUser(roles={"USER","ADMIN"})
-    public void save_Should_Return_BadRequest_When_PassingInvalidUser() throws Exception {
+    public void update_Should_Return_BadRequest_When_PassingInvalidUser() throws Exception {
         //Arrange
         final String EMAIL = "test@email.com";
         User user = new User();
@@ -69,13 +67,31 @@ public class UserControllerSaveTests {
         user.setEmail(EMAIL);
         user.setUserRole(UserRole.Member);
 
-        Mockito.when(mockUserService.save(user)).thenReturn(Optional.empty());
+        Mockito.when(mockUserService.update(1,user)).thenReturn(Optional.empty());
 
         //Act & Assert
-        mockMvc.perform(post("/api/users/").contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON)
                 .content(JsonHelper.convertObjectToJson(user)))
                 .andExpect(status().isOk())
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @WithMockUser(roles={"USER","ADMIN"})
+    public void update_Should_Return_BadRequest_When_PassingInvalidId() throws Exception {
+        //Arrange
+        final String EMAIL = "test@email.com";
+        User user = new User();
+        user.setId(1);
+        user.setEmail(EMAIL);
+        user.setUserRole(UserRole.Member);
+
+        Mockito.when(mockUserService.update(1,user)).thenReturn(Optional.empty());
+
+        //Act & Assert
+        mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON)
+                .content(JsonHelper.convertObjectToJson(user)))
+                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest());
+    }
 }
