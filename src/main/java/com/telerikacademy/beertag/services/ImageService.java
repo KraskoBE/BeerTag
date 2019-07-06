@@ -11,6 +11,8 @@ public interface ImageService {
 
     Optional<Image> save(MultipartFile file);
 
+    Optional<Image> save(byte[] bytes);
+
     Optional<Image> update(Integer id, MultipartFile file);
 
     void deleteById(Integer id);

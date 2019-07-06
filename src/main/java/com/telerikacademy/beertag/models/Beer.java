@@ -46,10 +46,12 @@ public class Beer {
     @Column(name = "description")
     private String description;
 
+    @NotNull
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private BeerType type;
 
+    @NotNull
     @Column(name = "style")
     @Enumerated(EnumType.STRING)
     private BeerStyle style;

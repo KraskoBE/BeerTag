@@ -21,10 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost",
+        allowCredentials = "true",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
@@ -48,16 +52,17 @@ public class AuthenticationController {
         this.modelMapper = modelMapper;
     }
 
-    @CrossOrigin(origins = "http://localhost:80")
-    @GetMapping("/signin")
-    public ResponseEntity signin(@RequestParam("email") final String email, @RequestParam("password") String password, HttpServletResponse response) {
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody final AuthenticationRequest userAuth, HttpServletResponse response) {
         try {
+            String email = userAuth.getEmail();
+            String password = userAuth.getPassword();
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid username/password"));
 
-            String token = provider.createToken(email,
-                    Collections.singletonList(user.getUserRole().name()));
+            String token = provider.createToken(user);
 
             Map<Object, Object> model = new HashMap<>();
             model.put("email", email);
@@ -75,10 +80,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody final AuthenticationRequest user) {
-        return userService.register(modelMapper.map(user, User.class))
-                .map(record -> ResponseEntity.ok().body(record))
-                .orElse(ResponseEntity.badRequest().build());
+    public ResponseEntity register(@RequestBody final AuthenticationRequest user, HttpServletResponse response) {
+        Optional<User> newUser = userService.register(modelMapper.map(user, User.class));
+
+        if (!newUser.isPresent())
+            return ResponseEntity.badRequest().build();
+
+        String token = provider.createToken(newUser.get());
+
+        Cookie cookie = new Cookie("access_token", token);
+        cookie.setPath("/");
+        cookie.setDomain("localhost");
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/validate")
@@ -87,7 +103,7 @@ public class AuthenticationController {
             provider.validateToken(token);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

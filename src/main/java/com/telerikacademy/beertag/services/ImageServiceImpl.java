@@ -36,6 +36,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public Optional<Image> save(byte[] bytes) {
+        return Optional.of(imageRepository.save(new Image(bytes)));
+    }
+
+    @Override
     public Optional<Image> update(Integer id, MultipartFile file) {
         if (isFileInvalid(file) || !imageRepository.findById(id).isPresent())
             return Optional.empty();
