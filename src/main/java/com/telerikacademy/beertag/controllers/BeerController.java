@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -46,21 +47,21 @@ public class BeerController {
 //    }
 
     @GetMapping
-    @PreAuthorize("permitAll()")
     public Page<Beer> findBy(@RequestParam final int page,
                              @RequestParam final String orderBy) {
         return beerService.findBy(page,orderBy);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('Member')")
     public ResponseEntity<Beer> findById(@PathVariable final int id) {
         return beerService.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('Member')")
     @PostMapping
+    @PreAuthorize("hasRole('Member')")
     public ResponseEntity<Beer> save(@RequestBody final BeerCreateDTO beer,
                                      final HttpServletRequest request) {
 

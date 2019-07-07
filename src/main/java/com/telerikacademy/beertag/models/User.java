@@ -2,11 +2,8 @@ package com.telerikacademy.beertag.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telerikacademy.beertag.models.constants.UserRole;
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnJava;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -84,25 +80,25 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<BeerRating> beerRatings = new HashSet<>();
 
-    @Column(name = "wishlist_ids")
-    public Set<Integer> getWishListIds() {
-        return wishList.stream()
-                .map(Beer::getId)
-                .collect(Collectors.toSet());
-    }
-
-    @Column(name = "dranklist_ids")
-    public Set<Integer> getDrankListIds() {
-        return drankList.stream()
-                .map(Beer::getId)
-                .collect(Collectors.toSet());
-    }
+//    @Column(name = "wishlist_ids")
+//    public Set<Integer> getWishListIds() {
+//        return wishList.stream()
+//                .map(Beer::getId)
+//                .collect(Collectors.toSet());
+//    }
+//
+//    @Column(name = "dranklist_ids")
+//    public Set<Integer> getDrankListIds() {
+//        return drankList.stream()
+//                .map(Beer::getId)
+//                .collect(Collectors.toSet());
+//    }
 
 
     //TODO possible errors from here
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(userRole.toString()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole.toString()));
     }
 
     @JsonIgnore

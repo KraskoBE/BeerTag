@@ -29,8 +29,8 @@ public class ImageController {
     }
 
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<byte[]> get(@PathVariable final int id) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);

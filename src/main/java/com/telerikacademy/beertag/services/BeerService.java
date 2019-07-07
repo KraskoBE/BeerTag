@@ -22,4 +22,6 @@ public interface BeerService {
     void deleteById(Integer id);
 
     Optional<Beer> rate(Integer userId, Integer beerId, Integer rating);
+
+    Optional<Beer> tag(Integer userId, Integer beerId, String tagName);
 }

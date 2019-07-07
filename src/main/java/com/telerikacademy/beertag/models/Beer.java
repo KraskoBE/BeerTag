@@ -44,7 +44,7 @@ public class Beer {
     private double ABV;
 
     @Column(name = "description")
-    private String description;
+    private String description="No description. Why don't you add one?";
 
     @NotNull
     @Column(name = "type")
@@ -84,23 +84,4 @@ public class Beer {
     @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
-
-    //---FIELDS END-------------------------FIELDS END---------------------------
-    /*@Column(name = "average_rating")
-    public Double getAverageRating() {
-        if (beerRatings == null)
-            return 0.0;
-        return beerRatings.stream()
-                .mapToDouble(BeerRating::getRating)
-                .average()
-                .orElse(0);
-    }
-
-
-    @Column(name = "total_votes")
-    public Integer getTotalVotes() {
-        if (beerRatings == null)
-            return 0;
-        return beerRatings.size();
-    }*/
 }

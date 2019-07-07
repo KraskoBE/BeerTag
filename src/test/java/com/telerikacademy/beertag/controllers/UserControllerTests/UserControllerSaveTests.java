@@ -60,7 +60,7 @@ public class UserControllerSaveTests {
     }
 
     @Test
-    @WithMockUser(roles={"USER","ADMIN"})
+    @WithMockUser(authorities = "ROLE_Member")
     public void save_Should_Return_BadRequest_When_PassingInvalidUser() throws Exception {
         //Arrange
         final String EMAIL = "test@email.com";

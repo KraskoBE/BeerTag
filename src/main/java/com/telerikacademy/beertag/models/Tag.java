@@ -30,4 +30,8 @@ public class Tag {
     @JsonIgnore
     @Column(name = "enabled")
     private boolean enabled = true;
+
+    public Tag(@NotNull String name) {
+        this.name = name;
+    }
 }

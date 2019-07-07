@@ -3,6 +3,7 @@ package com.telerikacademy.beertag.services;
 import com.telerikacademy.beertag.models.*;
 import com.telerikacademy.beertag.repositories.BeerRatingRepository;
 import com.telerikacademy.beertag.repositories.BeerRepository;
+import com.telerikacademy.beertag.repositories.TagRepository;
 import com.telerikacademy.beertag.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,12 +20,17 @@ public class BeerServiceImpl implements BeerService {
     private final BeerRepository beerRepository;
     private final UserRepository userRepository;
     private final BeerRatingRepository beerRatingRepository;
+    private final TagRepository tagRepository;
 
     @Autowired
-    public BeerServiceImpl(BeerRepository beerRepository, UserRepository userRepository, BeerRatingRepository beerRatingRepository) {
+    public BeerServiceImpl(BeerRepository beerRepository,
+                           UserRepository userRepository,
+                           BeerRatingRepository beerRatingRepository,
+                           TagRepository tagRepository) {
         this.beerRepository = beerRepository;
         this.userRepository = userRepository;
         this.beerRatingRepository = beerRatingRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -82,15 +88,8 @@ public class BeerServiceImpl implements BeerService {
         if (rating < 0 || rating > 5)
             return Optional.empty();
 
-        Optional<Beer> beerOptional = beerRepository.findById(beerId);
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        if (!beerOptional.isPresent() ||
-                !userOptional.isPresent())
-            return Optional.empty();
-
-        Beer beer = beerOptional.get();
-        User user = userOptional.get();
+        Beer beer = getBeer(beerId);
+        User user = getUser(userId);
 
         Optional<BeerRating> beerRating = beerRatingRepository.findById(new BeerRatingId(userId, beerId));
         if (rating == 0) {
@@ -107,6 +106,38 @@ public class BeerServiceImpl implements BeerService {
         beer.setTotalVotes(beer.getBeerRatings().size());
 
         return beerRepository.findById(beerId);
+    }
+
+    @Override
+    public Optional<Beer> tag(Integer userId, Integer beerId, String tagName) {
+        Beer beer = getBeer(beerId);
+        User user = getUser(userId);
+
+
+        Optional<Tag> tagOptional = tagRepository.findByName(tagName);
+        Tag tag = tagOptional.orElseGet(() -> tagRepository.save(new Tag(tagName)));
+
+        if(beer.getBeerTags().contains(tag))
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Tag already added");
+        //TODO make custom exception
+
+        beer.getBeerTags().add(tag);
+        beerRepository.save(beer);
+        return Optional.of(beer);
+    }
+
+    private User getUser(int userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent())
+            throw new IllegalArgumentException("User not found"); //TODO make custom exception
+        return userOptional.get();
+    }
+
+    private Beer getBeer(int beerId) {
+        Optional<Beer> beerOptional = beerRepository.findById(beerId);
+        if (!beerOptional.isPresent())
+            throw new IllegalArgumentException("Beer not found"); //TODO make custom exception
+        return beerOptional.get();
     }
 
 }
