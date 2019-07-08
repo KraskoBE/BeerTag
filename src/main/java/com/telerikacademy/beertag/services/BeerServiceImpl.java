@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +57,6 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public Optional<Beer> findById(Integer id) {
-        //throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found");
         return beerRepository.findById(id);
     }
 
@@ -73,30 +74,42 @@ public class BeerServiceImpl implements BeerService {
     public Optional<Beer> update(Integer id, Beer beer) {
         if (!beerRepository.findById(id).isPresent() || beerRepository.findByName(beer.getName()).isPresent())
             return Optional.empty();
-        beer.setId(id);
-        return Optional.of(beerRepository.save(beer));
+
+        Beer oldBeer = beerRepository.findById(id).get();
+        oldBeer.setOriginCountry(beer.getOriginCountry());
+        oldBeer.setBrewery(beer.getBrewery());
+        oldBeer.setStyle(beer.getStyle());
+        oldBeer.setType(beer.getType());
+        oldBeer.setABV(beer.getABV());
+        oldBeer.setDescription(beer.getDescription());
+
+        beerRepository.save(oldBeer);
+
+        return Optional.of(oldBeer);
     }
 
     @Override
-    public void deleteById(Integer id) {
-        beerRepository.deleteById(id);
+    public void deleteById(Integer beerId, Integer userId) {
+        Beer beer = getBeer(beerId);
+        User user = getUser(userId);
+
+        if(beer.getCreator() != user)
+            return;
+
+        beerRepository.deleteById(beerId);
     }
 
 
     @Override
     public Optional<Beer> rate(Integer userId, Integer beerId, Integer rating) {
-        if (rating < 0 || rating > 5)
+        if (rating < 1 || rating > 5)
             return Optional.empty();
 
         Beer beer = getBeer(beerId);
         User user = getUser(userId);
 
         Optional<BeerRating> beerRating = beerRatingRepository.findById(new BeerRatingId(userId, beerId));
-        if (rating == 0) {
-            beerRating.ifPresent(beerRatingRepository::delete);
-        } else {
-            beerRatingRepository.save(new BeerRating(user, beer, rating));
-        }
+        beerRatingRepository.save(new BeerRating(user, beer, rating));
 
         beer.setAverageRating(beer.getBeerRatings().stream()
                 .mapToDouble(BeerRating::getRating)
@@ -104,22 +117,19 @@ public class BeerServiceImpl implements BeerService {
                 .orElse(0));
 
         beer.setTotalVotes(beer.getBeerRatings().size());
-
-        return beerRepository.findById(beerId);
+        beerRepository.save(beer);
+        return Optional.of(beer);
     }
 
     @Override
     public Optional<Beer> tag(Integer userId, Integer beerId, String tagName) {
         Beer beer = getBeer(beerId);
-        User user = getUser(userId);
 
+        Optional<Tag> tagOptional = tagRepository.findByName(tagName.toLowerCase());
+        Tag tag = tagOptional.orElseGet(() -> tagRepository.save(new Tag(tagName.toLowerCase())));
 
-        Optional<Tag> tagOptional = tagRepository.findByName(tagName);
-        Tag tag = tagOptional.orElseGet(() -> tagRepository.save(new Tag(tagName)));
-
-        if(beer.getBeerTags().contains(tag))
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"Tag already added");
-        //TODO make custom exception
+        if (beer.getBeerTags().contains(tag))
+            return Optional.empty();
 
         beer.getBeerTags().add(tag);
         beerRepository.save(beer);

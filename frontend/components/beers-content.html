@@ -1,0 +1,113 @@
+<div id="beers-container" class="rounded">
+    <h2 class="text-left">
+        Top Rated Beers
+    </h2>
+    <div class="vDivider"></div>
+    <div class="row justify-content-center" style="color:black" id="topBeersContainer">
+
+    </div>
+    <br>
+    <div class="row justify-content-between" id="allBeersTextContainer" style="margin: auto;">
+        <h2 class="text-left">
+            All beers
+        </h2>
+        <button class="btn btn-light" id="addBeerButton" data-toggle="modal" data-target="#addBeerModal" href="#login"
+            data-whatever="login" style="display: none">🍺Add a beer🍺</button>
+        <div class="select">
+            <select id="orderSelect" class="form-control input-sm">
+                <option selected value="rating">Order by Rating</option>
+                <option value="abv">Order by ABV</option>
+                <option value="name">Order by Name</option>
+            </select>
+        </div>
+    </div>
+    <div class="vDivider"></div>
+    <div class="row justify-content-center" style="color:black" id="allBeersContainer">
+
+    </div>
+
+    <div class="d-flex justify-content-center" style="margin-bottom:0">
+        <ul id="pagination" class="pagination-sm"></ul>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addBeerModal" tabindex="-1" role="dialog" aria-labelledby="addBeerModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">New Beer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newBeerForm">
+                    <div class="form-group">
+                        <label for="inputBeerName" class="row-sm-2 row-form-label">Beer Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputBeerName" placeholder="Beer Name"
+                                name="name" minlength="3" maxlength="15" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputBrewery" class="row-sm-2 row-form-label">Brewery</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputBrewery" placeholder="Brewery"
+                                minlength="3" maxlength="15" name="brewery" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="countrySelect">Country</label>
+                        <div class="col-sm-10">
+                            <select id="countrySelect" class="form-control" required>
+                                <option disabled selected value>Select a country</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputBeerImage">Image</label>
+                        <input type="file" class="form-control-file col-sm-10" id="inputBeerImage"
+                            accept=".jpg,.jpeg,.png" required>
+                        <textarea hidden id="base64Converted" name="imageBase64"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="styleSelect">Style</label>
+                        <div class="col-sm-10">
+                            <select id="styleSelect" class="form-control" name="style" required>
+                                <option disabled selected value>Select a style</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="typeSelect">Type</label>
+                        <div class="col-sm-10">
+                            <select id="typeSelect" class="form-control" name="type" required>
+                                <option disabled selected value>Select a type</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputABV">Alcohol by volume</label>
+                        <div class="col-sm-10">
+                            <input id="inputABV" type="number" data-suffix="%" value="4.5" data-decimals="2" min="0" max="100" step="0.1"
+                                name="abv" required />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-start">
+                <button type="submit" class="btn btn-secondary" id="submitNewBeer" form="newBeerForm">Add beer</button>
+                <label class="text-success ml-1 font-weight-bold" id="addBeerInfoText" style="display: none"></label>
+            </div>
+        </div>
+    </div>
+</div>

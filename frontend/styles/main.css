@@ -1,0 +1,17 @@
+#nav1 {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.circleImage {
+    border-radius: 50% 50% 50% 50%;
+    width: 40px;
+    height: 40px;
+}
+
+.navbar-nav li a {
+    line-height: 50px;
+}
+
+.alert-info {
+    margin-bottom: 0;
+}

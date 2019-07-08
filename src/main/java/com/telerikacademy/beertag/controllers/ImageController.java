@@ -20,7 +20,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @PreAuthorize("hasRole('Member')")
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PostMapping
     public ResponseEntity<Image> save(@RequestParam(name = "image") final MultipartFile imageData) {
         return imageService.save(imageData)

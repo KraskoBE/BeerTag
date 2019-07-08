@@ -48,7 +48,7 @@ public class UserControllerGetTests {
         Mockito.when(mockUserService.findById(1)).thenReturn(Optional.of(user));
 
         //Act & Assert
-        mockMvc.perform(get("/api/users/{id}",1))
+        mockMvc.perform(get("api/users/{id}",1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(EMAIL));
     }
@@ -65,7 +65,7 @@ public class UserControllerGetTests {
         Mockito.when(mockUserService.findById(1)).thenReturn(Optional.empty());
 
         //Act & Assert
-        mockMvc.perform(get("/api/users/{id}",1))
+        mockMvc.perform(get("api/users/{id}",1))
                 .andExpect(status().isNotFound());
     }
 

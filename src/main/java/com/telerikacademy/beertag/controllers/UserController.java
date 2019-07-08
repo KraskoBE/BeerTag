@@ -1,20 +1,31 @@
 package com.telerikacademy.beertag.controllers;
 
 import com.telerikacademy.beertag.models.Beer;
+import com.telerikacademy.beertag.models.DTO.UserBeerDetails;
+import com.telerikacademy.beertag.models.DTO.UserUpdateDTO;
 import com.telerikacademy.beertag.models.User;
+import com.telerikacademy.beertag.models.constants.UserRole;
 import com.telerikacademy.beertag.security.JwtProvider;
 import com.telerikacademy.beertag.services.BeerService;
 import com.telerikacademy.beertag.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost",
+        allowCredentials = "true",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE})
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -34,6 +45,7 @@ public class UserController {
         return userService.findAll();
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable final int id) {
         return userService.findById(id)
@@ -41,6 +53,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('Admin')")
     @PostMapping
     public ResponseEntity<User> save(@RequestBody final User user) {
         return userService.save(user)
@@ -48,26 +61,33 @@ public class UserController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    /*@PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable final int id, @RequestBody final User user) {
         return userService.update(id, user)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.badRequest().build());
-    }
+    }*/
 
+    @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable final int id) {
         userService.deleteById(id);
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PutMapping("/rateBeer")
-    public ResponseEntity<Beer> rateBeer(@RequestParam(name = "user_id") int userId, @RequestParam("beer_id") int beerId, @RequestParam("rating") int rating) {
+    public ResponseEntity<Beer> rateBeer(@RequestParam("beer_id") final int beerId,
+                                         @RequestParam("rating") final int rating,
+                                         final HttpServletRequest request) {
+        int userId = getUserId(request);
 
         return beerService.rate(userId, beerId, rating)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PutMapping("/tagBeer")
     public ResponseEntity<Beer> tagBeer(@RequestParam("beer_id") final int beerId,
                                         @RequestParam("tag") final String tag,
@@ -78,7 +98,7 @@ public class UserController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    private int getUserId(HttpServletRequest request) {
+    private int getUserId(final HttpServletRequest request) {
         String token = jwtProvider.resolveToken(request);
         if (!jwtProvider.validateToken(token))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid Token");
@@ -86,22 +106,74 @@ public class UserController {
         return jwtProvider.getId(token);
     }
 
-//
-//    @PutMapping("/{id}/wishBeer")
-//    public Beer wishBeer(@PathVariable(name = "id") int userId, @RequestParam int beerId) {
-//        try {
-//            return userService.addToWishList(userId, beerId);
-//        } catch (IllegalArgumentException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-//        }
-//    }
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @PutMapping("/wish")
+    public ResponseEntity<User> wishBeer(@RequestParam("beer_id") final int beerId,
+                                         final HttpServletRequest request) {
+        int userId = getUserId(request);
 
-//    @PutMapping("/{id}/unWishBeer")
-//    public void unWishBeer(@PathVariable(name = "id") int userId, @RequestParam int beerId) {
-//        try {
-//            userService.removeFromWishList(userId, beerId);
-//        } catch (IllegalArgumentException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-//        }
-//    }
+        return userService.wish(userId, beerId)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @PutMapping("/drink")
+    public ResponseEntity<User> drinkBeer(@RequestParam("beer_id") final int beerId,
+                                          final HttpServletRequest request) {
+        int userId = getUserId(request);
+
+        return userService.drink(userId, beerId)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @GetMapping("/beerDetails")
+    public ResponseEntity<UserBeerDetails> beerDetails(@RequestParam("beer_id") final int beerId,
+                                                       final HttpServletRequest request) {
+        int userId = getUserId(request);
+
+        return userService.beerDetails(userId, beerId)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @GetMapping("/{id}/wishedBeers")
+    public List<Beer> wishedBeers(@PathVariable("id") final int userId) {
+        return userService.findWishedBeers(userId);
+    }
+
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @GetMapping("/{id}/createdBeers")
+    public List<Beer> createdBeers(@PathVariable("id") final int userId) {
+        return userService.findCreatedBeers(userId);
+    }
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @GetMapping("/{id}/topDrankBeers")
+    public List<Beer> topDrankBeers(@PathVariable("id") final int userId) {
+        return userService.findTopDrank(userId);
+    }
+
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(@PathVariable("id") final int userId,
+                                       @RequestBody final UserUpdateDTO userUpdateDTO,
+                                       final HttpServletRequest request) {
+        String token = jwtProvider.resolveToken(request);
+        Optional<User> user = userService.findById(jwtProvider.getId(token));
+
+        if (!user.isPresent())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+        if (user.get().getUserRole() != UserRole.Admin && userId != getUserId(request))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        return userService.update(userId, userUpdateDTO)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.badRequest().build());
+    }
 }

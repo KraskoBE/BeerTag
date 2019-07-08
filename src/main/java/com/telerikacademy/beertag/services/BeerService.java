@@ -19,7 +19,7 @@ public interface BeerService {
 
     Optional<Beer> update(Integer id, Beer beer);
 
-    void deleteById(Integer id);
+    void deleteById(Integer beerId, Integer userId);
 
     Optional<Beer> rate(Integer userId, Integer beerId, Integer rating);
 

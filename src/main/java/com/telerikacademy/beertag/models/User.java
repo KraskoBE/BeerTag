@@ -80,25 +80,13 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<BeerRating> beerRatings = new HashSet<>();
 
-//    @Column(name = "wishlist_ids")
-//    public Set<Integer> getWishListIds() {
-//        return wishList.stream()
-//                .map(Beer::getId)
-//                .collect(Collectors.toSet());
-//    }
-//
-//    @Column(name = "dranklist_ids")
-//    public Set<Integer> getDrankListIds() {
-//        return drankList.stream()
-//                .map(Beer::getId)
-//                .collect(Collectors.toSet());
-//    }
-
 
     //TODO possible errors from here
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userRole.toString()));
+        List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.toString()));
+        return grantedAuthorities;
     }
 
     @JsonIgnore

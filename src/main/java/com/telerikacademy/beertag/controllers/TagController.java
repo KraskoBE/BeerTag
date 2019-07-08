@@ -4,6 +4,7 @@ import com.telerikacademy.beertag.models.Tag;
 import com.telerikacademy.beertag.services.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +21,13 @@ public class TagController {
         this.tagService = tagService;
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @GetMapping
     public List<Tag> findAll() {
         return tagService.findAll();
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PostMapping
     public ResponseEntity<Tag> save(@RequestBody final Tag tag) {
         return tagService.save(tag)

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,7 +22,10 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost",
         allowCredentials = "true",
         allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST})
+        methods = {RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE})
 @RestController
 @RequestMapping("/api/beers")
 public class BeerController {
@@ -40,20 +42,14 @@ public class BeerController {
         this.modelMapper = modelMapper;
     }
 
-    //    @GetMapping
-//    @PreAuthorize("permitAll()")
-//    public List<Beer> findAll() {
-//        return beerService.findAll();
-//    }
-
     @GetMapping
     public Page<Beer> findBy(@RequestParam final int page,
                              @RequestParam final String orderBy) {
-        return beerService.findBy(page,orderBy);
+        return beerService.findBy(page, orderBy);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('Member')")
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     public ResponseEntity<Beer> findById(@PathVariable final int id) {
         return beerService.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
@@ -61,7 +57,7 @@ public class BeerController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('Member')")
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     public ResponseEntity<Beer> save(@RequestBody final BeerCreateDTO beer,
                                      final HttpServletRequest request) {
 
@@ -82,6 +78,7 @@ public class BeerController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    @PreAuthorize("hasRole('Member') or hasRole('Admin')")
     @PutMapping("/{id}")
     public ResponseEntity<Beer> update(@PathVariable final int id, @RequestBody final Beer beer) {
         return beerService.update(id, beer)
@@ -90,7 +87,15 @@ public class BeerController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable final int id) {
-        beerService.deleteById(id);
+    public void deleteById(@PathVariable(name = "id") final int beerId,
+                           final HttpServletRequest request) {
+
+        String token = jwtProvider.resolveToken(request);
+        if (!jwtProvider.validateToken(token))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid Token");
+
+        int userId = jwtProvider.getId(token);
+
+        beerService.deleteById(beerId, userId);
     }
 }

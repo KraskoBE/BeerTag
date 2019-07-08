@@ -29,7 +29,7 @@ public class TagServiceImpl implements TagService{
     @Override
     public Optional<Tag> save(Tag tag) {
         Optional<Tag> oldTag = tagRepository.findByName(tag.getName());
-        if(oldTag.isPresent())
+        if(oldTag.isPresent() || tag.getName().isEmpty())
             return Optional.empty();
         return Optional.of(tagRepository.save(tag));
     }

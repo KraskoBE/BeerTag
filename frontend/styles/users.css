@@ -1,0 +1,33 @@
+body {
+    background: url('../images/index_bg.jpg') no-repeat center right fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+#users-container {
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 1%;
+    margin-bottom:1%;
+    color: white;
+    padding: 2%;
+}
+
+.vDivider {
+    width: 100%;
+    height: 1px;
+    margin: 10px auto;
+    background: white;
+    border-bottom: 1px solid gray;
+}
+
+.table-dark{
+    background-color: rgba(20,20,20,0.75)
+}
+
+.circleImage {
+    border-radius: 50% 50% 50% 50%;
+    width: 30px;
+    height: 30px;
+}

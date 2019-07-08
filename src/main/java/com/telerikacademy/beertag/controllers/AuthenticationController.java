@@ -54,14 +54,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody final AuthenticationRequest userAuth, HttpServletResponse response) {
+    public ResponseEntity login(@RequestBody final AuthenticationRequest userAuth,
+                                final HttpServletResponse response) {
         try {
             String email = userAuth.getEmail();
             String password = userAuth.getPassword();
 
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid username/password"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid username/password")); //TODO change to appropriate
 
             String token = provider.createToken(user);
 
@@ -76,7 +77,7 @@ public class AuthenticationController {
             response.addCookie(cookie);
             return ok(model);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username/password");
+            throw new BadCredentialsException("Invalid username/password"); //TODO catch this exception in global
         }
     }
 
@@ -104,7 +105,7 @@ public class AuthenticationController {
             provider.validateToken(token);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage()); //TODO don't catch here
         }
     }
 }

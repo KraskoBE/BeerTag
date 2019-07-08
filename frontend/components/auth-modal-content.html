@@ -1,0 +1,85 @@
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab"
+                            aria-controls="login" aria-selected="true" data-whatever="login">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="signup-tab" data-toggle="tab" href="#signup" role="tab"
+                            aria-controls="signup" aria-selected="false" data-whatever="signup">Sign Up</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="tabContent">
+                    <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                        <form class="needs-validation" id="loginForm">
+                            <div class="form-group mt-3">
+                                <label for="inputEmail" class="row-sm-2 row-form-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmail" placeholder="Email"
+                                        name="email" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="row-sm-2 row-form-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPassword"
+                                        placeholder="Password" name="password" required>
+                                </div>
+                            </div>
+                            <hr>
+                            <button type="submit" class="btn btn-secondary" id="submitLogin">Log In</button>
+                            <label class="text-success ml-1 font-weight-bold" id="loginInfoText"
+                                style="display:none"></label>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+                        <form id="registrationForm">
+                            <div class="form-group mt-3">
+                                <label for="inputEmail" class="row-sm-2 row-form-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmailReg" placeholder="Email"
+                                        name="email" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUserName" class="row-sm-2 row-form-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputUserNameReg" placeholder="Name"
+                                        minlength="3" maxlength="20" name="name" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="row-sm-2 row-form-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPasswordReg"
+                                        placeholder="Password" minlength="6" maxlength="20" value name="password"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="inputPassword2" class="row-sm-2 row-form-label">Confirm Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPassword2Reg"
+                                        placeholder="Confirm Password" minlength="5" maxlength="20" required>
+                                    <label class="row-sm-2 row-form-label text-danger" style="display:none"
+                                        id="labelNoMatch">Passwords do not match</label>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <button type="submit" class="btn btn-secondary" id="submitRegister" disabled>
+                                Sign Up</button>
+                            <label class="text-success ml-1 font-weight-bold" id="registerInfoText"
+                                style="display:none"></label>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
